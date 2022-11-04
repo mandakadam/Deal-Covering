@@ -4,6 +4,12 @@
     <aside class="sidenav" :class="sidenav ? 'active' : '' ">
       <b-sidebar id="sidebar-1" variant="dark" title="Asian Paints [ASPT]" shadow no-close-on-route-change v-model="sidenav" sidebar-class="bg-white m-3 rounded">
         <SidebarComponent/>
+        <template>
+       <div class="text-center mt-5">
+        <img src="@/assets/img/icon-documentation.svg" alt="" height="100"/>
+       </div>
+      </template>
+       
       </b-sidebar>
     </aside>
 

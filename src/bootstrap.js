@@ -21,6 +21,14 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 import '@/assets/css/style.scss'
 
+/* DIRECTIVES */
+import Vue2Filters from "vue2-filters";
+import filters from "@/filters";
+Vue.use(Vue2Filters);
+for(let name in filters) {
+  Vue.filter(name, filters[name]);
+}   
+
 const servertype = config.jsonserver ? 'jsonserver' : 'apiserver';
 const baseurl = config.jsonserver ? config.JREST : config.NREST;
 window.credCAPI = Vue.$credCAPI = Vue.prototype.$credCAPI = credCAPI({ baseurl: baseurl, servertype: servertype });
