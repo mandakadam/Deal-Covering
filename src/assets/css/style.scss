@@ -1,0 +1,177 @@
+.min-height-300 {
+    min-height: 300px!important;
+}
+.text-primary {
+    color: #5e72e4!important
+}
+
+.text-secondary {
+    color: #8392ab!important
+}
+
+.text-success {
+    color: #2dce89!important
+}
+
+.text-info {
+    color: #11cdef!important
+}
+
+.text-warning {
+    color: #fb6340!important
+}
+
+.text-danger {
+    color: #f5365c!important
+}
+
+.text-light {
+    color: #e9ecef!important
+}
+
+.text-dark {
+    color: #344767!important
+}
+
+.text-white {
+    color: #fff!important
+}
+
+.text-body {
+    color: #67748e!important
+}
+
+.text-muted {
+    color: #6c757d!important
+}
+
+.text-opacity-25 {
+    --bs-text-opacity: 0.25
+}
+
+.text-opacity-50 {
+    --bs-text-opacity: 0.5
+}
+
+.text-opacity-75 {
+    --bs-text-opacity: 0.75
+}
+
+.text-opacity-100 {
+    --bs-text-opacity: 1
+}
+.bg-primary {
+    background-color: #5e72e4!important
+}
+
+.bg-secondary {
+    background-color: #8392ab!important
+}
+
+.bg-success {
+    background-color: #2dce89!important
+}
+
+.bg-info {
+    background-color: #11cdef!important
+}
+
+.bg-warning {
+    background-color: #fb6340!important
+}
+
+.bg-danger {
+    background-color: #f5365c!important
+}
+
+.bg-light {
+    background-color: #e9ecef!important
+}
+
+.bg-dark {
+    background-color: #344767!important
+}
+
+.bg-body,.bg-white {
+    background-color: #fff!important
+}
+
+.bg-transparent {
+    background-color: transparent!important
+}
+
+.bg-gray-100 {
+    background-color: #f8f9fa!important
+}
+
+.bg-gray-200 {
+    background-color: #e9ecef!important
+}
+
+.bg-gray-300 {
+    background-color: #dee2e6!important
+}
+
+.bg-gray-400 {
+    background-color: #ced4da!important
+}
+
+.bg-gray-500 {
+    background-color: #adb5bd!important
+}
+
+.bg-gray-600 {
+    background-color: #6c757d!important
+}
+
+.bg-gray-700 {
+    background-color: #495057!important
+}
+
+.bg-gray-800 {
+    background-color: #343a40!important
+}
+
+.bg-gray-900 {
+    background-color: #212529!important
+}
+
+.bg-opacity-10 {
+    --bs-bg-opacity: 0.1
+}
+
+.bg-opacity-25 {
+    --bs-bg-opacity: 0.25
+}
+
+.bg-opacity-50 {
+    --bs-bg-opacity: 0.5
+}
+
+.bg-opacity-75 {
+    --bs-bg-opacity: 0.75
+}
+
+.bg-opacity-100 {
+    --bs-bg-opacity: 1
+}
+
+.bg-gradient {
+    background-image: var(--bs-gradient)!important
+}
+
+
+@media (min-width: 1200px) {
+    .sidenav{
+        .b-sidebar{max-width: 15.625rem!important; background: red;}
+        .b-sidebar-header{font-size: 1rem;}
+    }
+   
+    .sidenav.active+.main-content {
+        margin-left: 17.125rem
+    }
+    .sidenav+.main-content {
+        margin-left: 0
+    }
+
+}
