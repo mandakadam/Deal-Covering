@@ -175,3 +175,8 @@
     }
 
 }
+
+.handsontable{
+   .htCore > thead>tr>th{border-color: transparent; }
+   .htCore > tbody>tr>td{border-color: transparent; height: 35px;}
+}
