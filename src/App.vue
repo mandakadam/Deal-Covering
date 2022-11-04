@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
-    <aside class="sidenav" :class="sidenav ? 'active' : '' ">
-      <b-sidebar id="sidebar-1" variant="dark" title="Asian Paints [ASPT]" shadow no-close-on-route-change v-model="sidenav" sidebar-class="bg-white m-3 rounded">
+    <aside class="sidebarFlag" :class="sidebarFlag ? 'active' : '' ">
+      <b-sidebar id="sidebar-1" variant="dark" title="Asian Paints [ASPT]" shadow no-close-on-route-change v-model="sidebarFlag" sidebar-class="bg-white m-3 border-radius-xl">
         <SidebarComponent/>
         <template>
        <div class="text-center mt-5">
@@ -14,7 +14,7 @@
     </aside>
 
     <section class="main-content position-relative">
-       <HeaderComponent />
+       <HeaderComponent :sidebarFlag="sidebarFlag" />
       <div class="container-fluid">
 
        <router-view></router-view>
@@ -35,7 +35,7 @@ export default {
   },
  data(){
     return{
-      sidenav:true
+      sidebarFlag:true
     }
   }
 }

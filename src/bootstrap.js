@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import credCAPI from "@/utils/credCAPI";
+import credCAPI from "./utils/credCAPI";
 import router from './router';
+import store from "./store";
 import App from './App.vue'
 import config from "config";
 Vue.config.productionTip = false
@@ -21,13 +22,10 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 import '@/assets/css/style.scss'
 
-/* DIRECTIVES */
-import Vue2Filters from "vue2-filters";
-import filters from "@/filters";
-Vue.use(Vue2Filters);
-for(let name in filters) {
-  Vue.filter(name, filters[name]);
-}   
+/* Plugins */
+import Plugin from '@/plugins';
+Vue.use(Plugin, store);
+
 
 const servertype = config.jsonserver ? 'jsonserver' : 'apiserver';
 const baseurl = config.jsonserver ? config.JREST : config.NREST;
@@ -37,5 +35,6 @@ window.credCAPI = Vue.$credCAPI = Vue.prototype.$credCAPI = credCAPI({ baseurl: 
 
 new Vue({
   router,
+  store: store,
   render: h => h(App),
 }).$mount('#app')

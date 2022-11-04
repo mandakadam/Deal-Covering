@@ -1,7 +1,6 @@
 <template>
     <b-navbar toggleable="lg" type="dark">
-
-   <b-button variant="default" v-b-toggle.sidebar-1 class="p-0">
+   <b-button variant="default" v-b-toggle.sidebar-1 class="p-0 text-white" v-if="!sidebarFlag">
       <b-icon-list />
    </b-button>
     <b-navbar-brand href="#/" class="ml-2">NavBar</b-navbar-brand>
@@ -36,6 +35,7 @@
 
 <script>
 export default {
+  props:["sidebarFlag"],
   data(){
     return{
       

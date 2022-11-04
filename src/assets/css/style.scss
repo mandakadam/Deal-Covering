@@ -113,7 +113,29 @@ color: #67748e;
     border-color: var(--bs-btn-bg);
     transition: all .15s ease-in;
 }
+.border-radius-xs {
+    border-radius: .125rem
+}
 
+.border-radius-sm {
+    border-radius: .25rem
+}
+
+.border-radius-md {
+    border-radius: .5rem
+}
+
+.border-radius-lg {
+    border-radius: .75rem
+}
+
+.border-radius-xl {
+    border-radius: 1rem
+}
+
+.border-radius-2xl {
+    border-radius: 1.5rem
+}
 .text-primary {
     color: #5e72e4!important
 }
@@ -275,16 +297,17 @@ color: #67748e;
 
 
 @media (min-width: 1200px) {
-    .sidenav{
+    .sidebarFlag{
         .b-sidebar{max-width: 15.625rem!important; background: red;}
         .b-sidebar-header{font-size: 1rem;}
     }
    
-    .sidenav.active+.main-content {
-        margin-left: 17.125rem
+    .sidebarFlag.active+.main-content {
+        margin-left: 17.125rem;
     }
-    .sidenav+.main-content {
-        margin-left: 0
+    .sidebarFlag+.main-content {
+        margin-left: 0;
+        transition: all ease-in-out 0.2s;
     }
 
 }
@@ -332,3 +355,117 @@ color: #67748e;
         }
     }
 }
+
+/*FORM GRID*/
+@mixin span($perc) {
+    @for $i from 1 to 10 {
+      .span#{$i}#{0} {
+        width: calc( $perc * $i/10 );
+         // .span10{width: calc(50% * 0.1);}
+      }
+    }
+  }
+.flex-grid{
+    display: flex; align-items: flex-end;
+    .item{padding:0 5px; display: block;}
+    .item:first-child{padding-left:0}
+    .item:first-child{padding-right:0}
+    .btn-sm{font-size: 1.1rem;}
+  
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin: 0 -1rem;
+    .form-group{margin: 0;}
+  
+    &.form-inline label{margin-right: 1rem;}
+    &.form-inline .item{align-self: baseline;}
+    .item{padding: 0 1rem 1rem; }
+    .item.radio-align{align-self: center; margin-top: 18px; margin-left: 10px;}
+  
+    .item .btn{font-size: var(--form-control-size);}
+  
+    @media (min-width:992px) {
+    flex-direction: row;
+    // .item{align-self: flex-end;}
+    .span100{width:100% !important}
+    .item.span-check{width:1rem !important; margin-right: 0; display: flex; align-items: flex-end;}
+    
+    .span10{overflow: hidden; padding-left: 0; padding-right: 0; text-align: center;}
+    .span20{text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+    .span25{text-overflow: ellipsis; overflow: hidden; white-space: nowrap;}
+    .span5{text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 5% !important;}
+    
+    &.grid--9{
+        .item  {width: calc(11.11%);}
+        @include span(88.89%);
+    }
+    &.grid--8{
+        .item  {width: calc(12.5%);}
+        @include span(87.5%);
+    }
+    &.grid--6{
+        .item  {width: calc(20%);}
+        @include span(20%);
+    }
+    &.grid--5{
+        .item  {width: calc(20%);}
+        @include span(20%);
+    }
+    &.grid--4{
+        .item  {width: calc(25%);}
+        @include span(25%);
+    }
+    &.grid--3{
+        .item  {width: calc(33.3%);}
+        @include span(33.3%);
+    }
+  
+    &.grid--2{
+        .item  {width: calc(50%);}
+        @include span(50%);
+    }
+  
+    &.grid--1{
+        .item  {width: calc(100%);}
+        @include span(100%);
+    }
+  }
+  }
+  /*END FORM GRID*/
+  .form-wrapper{
+    font-size: 11px;
+    .was-validated .form-control:valid, .form-control.is-valid{background-image: none; border-color: inherit; border-color: #eee; padding-right: 0 !important;}
+    input::placeholder,label.text-muted{color: #999 !important; font-weight: normal !important; font-size:11px; text-align: left !important;}
+    .form-control, .vs__dropdown-toggle{   
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+        border-radius: 0;
+        border-color: #eee;
+        height: 22.59px;
+        font-size: 11px;
+    }
+    .vs__dropdown-menu{font-size: 9px; margin: 0; padding: 0;}
+    .vs__dropdown-option{padding: 5px;}
+
+    .form-group-label{font-size: 9px; text-transform: uppercase; color: #8392ab; margin: 0; color: #344767; font-weight: bold;}
+    .form-control:focus{box-shadow: -1px 3px 0px -2px #5e72e4;}
+    .custom-control-label{cursor: pointer;}
+    .form-text{margin: 0; text-align: right;}
+    .form-group-number .form-control{text-align: right;}
+
+    [size=sm]{
+        &.v-select{
+            .vs__selected-options{padding-left: 0; }
+            .vs__selected{padding-left: 0; margin-left: 0; font-size: 10px; }
+            .vs__search, .vs__search:focus{padding-left: 0; margin: 0; padding: 0; width: 0;} 
+            .vs__actions{transform: scale(0.5);}
+        }
+    }
+  }
