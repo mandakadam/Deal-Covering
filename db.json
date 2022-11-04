@@ -1,0 +1,86 @@
+{
+    "deal_read": {
+        "data":[
+                {
+                        "deal_id":"2022103000101",
+                        "trade_date": "31/10/2022 12:20:15",
+                        "curr_pair":"USD/INR",
+                        "buy_sell":"SELL",
+                        "fc_amount":"10000000",
+                        "open_amount":"10000000",
+                        "tenor":"SPOT",
+                        "maturity_date":"02/11/2022",
+                        "interbank_rate":"83.16",
+                        "client_mrg":"0.5",
+                        "bank_mrg":"0.1",
+                        "fwd_points":"",
+                        "client_rate":"82.56",
+                        "fc2_amount":"825600000"
+                },
+                {
+                        "deal_id":"2022103000102",
+                        "trade_date":"31/10/2022 12:22:15",
+                        "curr_pair":"EUR/INR",
+                        "buy_sell":"SELL",
+                        "fc_amount":"10000000",
+                        "open_amount":"0",
+                        "tenor":"SPOT",
+                        "maturity_date":"02/11/2022",
+                        "interbank_rate":"81.37206",
+                        "client_mrg":"1.31435",
+                        "bank_mrg":"0.18091",
+                        "fwd_points":"",
+                        "client_rate":"79.8768",
+                        "fc2_amount":"798768000"
+                },
+                {
+                        "deal_id":"2022103000103",
+                        "trade_date":"31/10/2022 12:23:15",
+                        "curr_pair":"EUR/INR",
+                        "buy_sell":"SELL",
+                        "fc_amount":"5000000",
+                        "open_amount":"5000000",
+                        "tenor":"SPOT",
+                        "maturity_date":"02/11/2022",
+                        "interbank_rate":"81.37206",
+                        "client_mrg":"1.31435",
+                        "bank_mrg":"0.18091",
+                        "fwd_points":"",
+                        "client_rate":"79.8768",
+                        "fc2_amount":"399384000"
+                },
+                {
+                        "deal_id":"2022103000104",
+                        "trade_date":"31/10/2022 12:23:15",
+                        "curr_pair":"EUR/INR",
+                        "buy_sell":"SELL",
+                        "fc_amount":"3000000",
+                        "open_amount":"3000000",
+                        "tenor":"SPOT",
+                        "maturity_date":"02/11/2022",
+                        "interbank_rate":"81.37206",
+                        "client_mrg":"1.31435",
+                        "bank_mrg":"0.18091",
+                        "fwd_points":"",
+                        "client_rate":"79.8768",
+                        "fc2_amount":"239630400"
+                },
+                {
+                        "deal_id":"2022103000105",
+                        "trade_date":"31/10/2022 12:23:15",
+                        "curr_pair":"EUR/INR",
+                        "buy_sell":"SELL",
+                        "fc_amount":"2000000",
+                        "open_amount":"2000000",
+                        "tenor":"SPOT",
+                        "maturity_date":"02/11/2022",
+                        "interbank_rate":"81.37206",
+                        "client_mrg":"1.31435",
+                        "bank_mrg":"0.18091",
+                        "fwd_points":"",
+                        "client_rate":"79.8768",
+                        "fc2_amount":"159753600"
+                }
+        ]
+}
+}

@@ -1,8 +1,6 @@
-import Vue from 'vue'
-import App from './App.vue'
+import configLoader from "config.js"
 
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+configLoader(function (config) {
+  window.config = config;
+  return import("./bootstrap");
+});
