@@ -40,7 +40,7 @@
                 @click="(vm = {}), (countDown = 0)"
                 >Clear Fields</b-button
               >
-              <b-button size="sm" variant="success" @click="vm = {}"
+              <b-button size="sm" variant="success" class="btn-warning text-white bg-gradient-warning" @click="vm = {}"
                 >Book Rate</b-button
               >
             </div>
@@ -82,14 +82,14 @@
             <b-navbar class="text-nowrap p-0">
               <b-button
                 size="sm"
-                class="btn-primary mr-1"
+                class="btn-success bg-gradient-success mr-2"
                 @click="showInfoModal(data.item, data.index, $event.target)"
               >
                 Book Deal
               </b-button>
               <b-button
                 size="sm"
-                class="btn-primary-dark mr-1"
+                class="btn-primary bg-gradient-primary mr-2"
                 @click="showInfoModal(data.item, data.index, $event.target)"
               >
                 Split
@@ -141,19 +141,18 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "deal_id", label: "Rate Id", type: "text" },
-        { key: "curr_pair", label: "Curr Pair", type: "text" },
+        { key: "deal_id", label: "Rate Id"},
+        { key: "curr_pair", label: "Curr Pair"},
         {
           key: "buy_sell",
           label: "BuySell",
-          type: "text",
           tdClass: (value, key, item) => {
             return value == "SELL" ? "text-danger" : "text-success";
           },
         },
         { key: "fc_amount", label: "FC Amount", tdClass: "text-right" },
         { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
-        { key: "tenor", label: "Tenor", type: "text" },
+        { key: "tenor", label: "Tenor"},
         { key: "maturity_date", label: "Period" },
         {
           key: "interbank_rate",

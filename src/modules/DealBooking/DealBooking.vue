@@ -35,7 +35,7 @@
     </b-card>
     <div class="d-flex justify-content-between mb-3">
       <h5 class="text-light m-0">Open Rates</h5>
-      <b-button size="sm" variant="dark" :disabled="selectedItems.length < 1"><b-icon-shuffle /> Merge Deals</b-button>
+      <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1"><b-icon-shuffle /> Merge Deals</b-button>
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg">
       <b-table
@@ -66,7 +66,7 @@
 
               <b-button
                 size="sm"
-                class="btn-primary mr-1"
+                class="btn-primary bg-gradient-primary mr-2"
                 @click="showInfoModal(data.item, data.index, $event.target)"
               >
                 Book Deal
@@ -119,20 +119,19 @@ export default {
           isRowHeader: true,
           variant: "light",
         },
-        { key: "deal_id", label: "Rate Id", type: "text" },
         { key: "trade_date", label: "Trade Date" },
-        { key: "curr_pair", label: "Curr Pair", type: "text" },
+        { key: "deal_id", label: "Rate Id" },
+        { key: "curr_pair", label: "Curr Pair" },
         {
           key: "buy_sell",
           label: "BuySell",
-          type: "text",
           tdClass: (value, key, item) => {
             return value == "SELL" ? "text-danger" : "text-success";
           },
         },
         { key: "fc_amount", label: "FC Amount", tdClass: "text-right" },
         { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
-        { key: "tenor", label: "Tenor", type: "text" },
+        { key: "tenor", label: "Tenor" },
         { key: "maturity_date", label: "Period" },
         {
           key: "interbank_rate",
@@ -249,6 +248,7 @@ function getEl(vm) {
         name: "booking_date",
         label: "Booking Date",
         rules: "",
+        value: vm.$today()
       },
       {
         type: "select",

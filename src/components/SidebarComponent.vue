@@ -1,5 +1,5 @@
 <template>
-<b-list-group flush class="sidenav_list pt-3">
+<b-list-group flush class="sidenav_list pt-1">
       <b-list-group-item to="/RateBooking"><b-icon-book class="text-warning"/> Booking</b-list-group-item>
       <b-list-group-item to="/SavedDeals"><b-icon-save-fill class="text-success" /> Saved Deals</b-list-group-item>
       <b-list-group-item to="/DealBooking"><b-icon-check-circle class="text-info" /> Deal Booking</b-list-group-item>
