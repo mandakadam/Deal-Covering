@@ -69,7 +69,7 @@
                         "deal_id":"2022103000105",
                         "trade_date":"31/10/2022 12:23:15",
                         "curr_pair":"EUR/INR",
-                        "buy_sell":"SELL",
+                        "buy_sell":"BUY",
                         "fc_amount":"2000000",
                         "open_amount":"2000000",
                         "tenor":"SPOT",

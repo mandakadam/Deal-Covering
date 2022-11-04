@@ -71,28 +71,6 @@
         class="mb-0 border-radius-lg custom_table"
         style="min-height: 50vh"
       >
-        <template #cell(actions)="row">
-          <div class="text-nowrap">
-            <b-button
-              size="sm"
-              class="btn-primary mr-1"
-              @click="info(row.item, row.index, $event.target)"
-            >
-              Book Deal
-            </b-button>
-            <b-button
-              size="sm"
-              class="btn-primary-dark mr-1"
-              @click="info(row.item, row.index, $event.target)"
-            >
-              Split
-            </b-button>
-            <!-- <b-button size="sm" @click="row.toggleDetails">
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </b-button> -->
-          </div>
-        </template>
-
         <template v-for="field in fields" v-slot:[`cell(${field.key})`]="data">
           <slot
             v-if="field.key != 'actions'"
@@ -162,8 +140,8 @@ export default {
           isRowHeader: true,
           variant: "light",
         },
-        { key: "deal_id", label: "Rate Id", type: "text" },
         { key: "trade_date", label: "Trade Date" },
+        { key: "deal_id", label: "Rate Id", type: "text" },
         { key: "curr_pair", label: "Curr Pair", type: "text" },
         {
           key: "buy_sell",

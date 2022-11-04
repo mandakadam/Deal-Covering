@@ -24,7 +24,6 @@ export default {
                   background-color: #f6f9fc;
                   box-shadow: none; border: 0;
                   color: #344767;
-                  border-radius: 0.5rem;
                   }
       }
 </style>

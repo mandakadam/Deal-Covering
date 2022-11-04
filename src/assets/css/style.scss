@@ -312,18 +312,15 @@ color: #67748e;
 
 }
 
-.handsontable{
-   .htCore > thead>tr>th{border-color: transparent; }
-   .htCore > tbody>tr>td{border-color: transparent; height: 35px;}
-}
-
 .custom_table{
     font-size: 11px;
+    .custom-control-label{cursor: pointer;}
+
     thead{
     box-shadow: 0 0 15px rgb(0 0 0 / 10%);
     z-index: 99;
     position: relative;
-    th{white-space: nowrap; font-size: 11px; text-transform: uppercase; color: #8392ab;}
+    th{white-space: nowrap; font-size: 10px; text-transform: uppercase; color: #8392ab;}
     td{color:#8392ab!important}
     }
     &.table-responsive{
@@ -407,8 +404,8 @@ color: #67748e;
         @include span(87.5%);
     }
     &.grid--6{
-        .item  {width: calc(20%);}
-        @include span(20%);
+        .item  {width: calc(16.6%);}
+        @include span(83.4%);
     }
     &.grid--5{
         .item  {width: calc(20%);}
