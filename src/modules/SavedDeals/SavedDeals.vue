@@ -9,43 +9,7 @@
             type="hidden"
           />
 
-          <div class="grid grid--9">
-            <FormElementWithValidation
-              v-for="(item, index) in el.MainEl"
-              :key="`MainEl${index}`"
-              :item="item"
-              v-model="vm[item.name]"
-              :dataset="ds[item.ds]"
-              formControlSize="sm"
-            >
-            </FormElementWithValidation>
-
-            <div class="item ml-auto text-right span30">
-              <b-button
-                v-if="countDown > 0"
-                size="sm"
-                variant="danger"
-                disabled
-                class="mr-3"
-              >
-                <span class="d-flex align-items-center">
-                  <b-spinner class="mr-2" small></b-spinner>
-                  {{ countDown }}
-                </span>
-              </b-button>
-              <b-button
-                size="sm"
-                variant="default"
-                class="bg-light mr-3"
-                @click="(vm = {}), (countDown = 0)"
-                >Clear Fields</b-button
-              >
-              <b-button size="sm" variant="success" class="btn-warning text-white bg-gradient-warning" @click="vm = {}"
-                >Book Rate</b-button
-              >
-            </div>
-          </div>
-          <div class="grid grid--9">
+          <div class="grid grid--6">
             <FormElementWithValidation
               v-for="(item, index) in el.DealEl"
               :key="`DealEl${index}`"
@@ -55,18 +19,28 @@
               formControlSize="sm"
             >
             </FormElementWithValidation>
+           <div class="item ml-auto text-right align-self-end">
+              <b-button
+                size="sm"
+                variant="default"
+                class="bg-light mr-3"
+                @click="(vm = {}), (countDown = 0)"
+                ><b-icon-arrow-clockwise /> Clear</b-button
+              >
+              <b-button size="sm" variant="success"><b-icon-filter /> Apply</b-button>
+            </div>
           </div>
         </b-form>
       </ValidationObserver>
     </b-card>
     <div class="d-flex justify-content-between mb-3">
       <h5 class="text-light m-0">Saved Deals</h5>
-      <!-- <b-button size="sm" variant="danger"><b-icon-x-circle /> Close All Deals</b-button> -->
+      <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1" @click="$refs['MergeDealModal'].showModal()"><b-icon-shuffle /> Merge Deals</b-button>
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
-        :sticky-header="stickyHeader"
-        :no-border-collapse="noCollapse"
+        :sticky-header="true"
+        :no-border-collapse="true"
         responsive
         size="sm"
         table-variant="light"
@@ -84,20 +58,20 @@
           >
           <slot v-else :name="field.key" :data="data.item">
             <b-navbar class="text-nowrap p-0">
+              <b-form-checkbox
+                class="mr-2"
+                @change="(e)=>onSelectItems(e, data.item)"
+              >
+              </b-form-checkbox>
+
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                @click="onCreateDeal(data.item)"
               >
                 Book Deal
               </b-button>
-              <b-button
-                size="sm"
-                class="btn-primary bg-gradient-primary mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
-              >
-                Split
-              </b-button>
+
             </b-navbar>
           </slot>
         </template>
@@ -126,18 +100,28 @@
       </b-modal>
     </b-card>
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
-    <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>  </section>
+    <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
+
+    <MergeDealModal ref="MergeDealModal" :dataSource="selectedItems[1]"/>
+  </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import MergeDealModal from "@/components/DealComponents/MergeDealModal.vue"
+
 export default {
+   components: {
+    MergeDealModal
+  },
   data() {
     return {
       vm: {},
       countDown: 0,
+      selectedItems:[],
       stickyHeader: true,
       noCollapse: true,
+      selectedDeal:{},
       items: [],
       fields: [
         {
@@ -147,8 +131,8 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "deal_id", label: "Rate Id"},
-        { key: "curr_pair", label: "Curr Pair"},
+        { key: "deal_id", label: "Rate Id" },
+        { key: "curr_pair", label: "Curr Pair" },
         {
           key: "buy_sell",
           label: "BuySell",
@@ -158,7 +142,7 @@ export default {
         },
         { key: "fc_amount", label: "FC Amount", tdClass: "text-right" },
         { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
-        { key: "tenor", label: "Tenor"},
+        { key: "tenor", label: "Tenor" },
         { key: "maturity_date", label: "Period" },
         {
           key: "interbank_rate",
@@ -200,7 +184,7 @@ export default {
         .collection("deal/read")
         .read()
         .then((response) => {
-          this.items = response || [];
+           this.items = response || [];
         });
     },
     countDownTimer() {
@@ -214,6 +198,42 @@ export default {
     onChange_interbank_rate() {
       this.countDown = 10;
       this.countDownTimer();
+    },
+    onSelectItems(val, item, index){
+      if(val == true){
+          this.selectedItems.push(item);
+      }
+      else{
+        this.selectedItems = this.selectedItems.filter(i => {
+          return i.deal_id != item.deal_id
+        })
+      }
+      
+    },
+    onCreateDeal(item){
+      const vObj = {
+        data:{
+          "curr_pair": item.curr_pair || "",
+          "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
+          "buy_sell": item.buy_sell || "",
+          "fc_amount": item.fc_amount || "",
+          "tenor": item.tenor || "",
+          "maturity_date": item.maturity_date || this.$today(),
+          "interbank_rate": item.interbank_rate || "",
+          "client_mrg": item.client_mrg || "",
+          "bank_mrg": item.bank_mrg || "",
+          "fwd_points": item.fwd_points || "",
+          "client_rate": item.client_rate || "",
+          "fc2_amount": item.fc2_amount || "",
+        }
+      }
+
+      this.$credCAPI
+       .collection("deal/create")
+       .create({body: vObj})
+        .then((response) => {
+          this.$_successMessage(`Deal created successfully.`);
+        });
     },
     showInfoModal(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
@@ -251,31 +271,14 @@ export default {
 
 function getEl(vm) {
   return {
-    MainEl: [
-      {
-        type: "radio",
-        name: "type",
-        label: "Interbank",
-        rules: {},
-        class: "align-self-center",
-      },
-      {
-        type: "radio",
-        name: "type",
-        label: "Client",
-        rules: {},
-        class: "align-self-center",
-      },
-
-      {
-        type: "text",
-        name: "deal",
-        label: "Enter Deal",
-        rules: {},
-        class: "span50",
-      },
-    ],
     DealEl: [
+      {
+        type: "date",
+        name: "booking_date",
+        label: "Booking Date",
+        rules: {},
+        value: vm.$today()
+      },
       {
         type: "select",
         name: "curr_pair",
@@ -301,59 +304,22 @@ function getEl(vm) {
         "ds-name": "descr",
       },
       {
-        type: "number",
-        name: "fc_amount",
-        label: "Amount",
-        rules: {},
+        type: "select",
+        name: "rate_id",
+        label: "Rate ID",
+        static: true,
+        ds: [{ code: "rate_id", descr: "rate_id" }],
+        "ds-code": "code",
+        "ds-name": "descr",
       },
       {
         type: "select",
-        name: "tenor",
-        label: "Tenor",
+        name: "deal_id",
+        label: "Deal Id",
         static: true,
-        ds: [{ code: "SPOT", descr: "SPOT" }],
+        ds: [{ code: "deal_id", descr: "deal_id" }],
         "ds-code": "code",
         "ds-name": "descr",
-        description: `(${vm.$today()})`,
-      },
-      {
-        type: "number",
-        label: "Client Mrg",
-        name: "client_mrg",
-        rules: {},
-      },
-      {
-        type: "number",
-        name: "interbank_rate",
-        label: "Interbank Rate",
-        rules: {},
-        handlers: {
-          blur: [vm.onChange_interbank_rate],
-        },
-      },
-      {
-        type: "number",
-        name: "bank_mrg",
-        label: "Bank Mrg",
-        rules: {},
-      },
-      {
-        type: "number",
-        name: "fwd_points",
-        label: "Fwd Points",
-        rules: {},
-      },
-      {
-        type: "number",
-        name: "client_rate",
-        label: "Client Rate",
-        rules: {},
-        description: vm.vm.client_rate
-          ? vm.$options.filters.convertCommaString(
-              parseFloat(vm.vm.client_rate * 1000000),
-              2
-            )
-          : "",
       },
     ],
   };

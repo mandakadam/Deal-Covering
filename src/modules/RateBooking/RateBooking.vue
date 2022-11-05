@@ -62,15 +62,15 @@
     </b-card>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
-        :sticky-header="stickyHeader"
-        :no-border-collapse="noCollapse"
+        :sticky-header="true"
+        :no-border-collapse="true"
         responsive
         size="sm"
         table-variant="light"
         :items="items"
         :fields="fields"
         class="mb-0 border-radius-lg custom_table"
-        style="min-height: 50vh"
+        style="min-height: 68vh"
       >
         <template v-for="field in fields" v-slot:[`cell(${field.key})`]="data">
           <slot
@@ -91,7 +91,7 @@
               <b-button
                 size="sm"
                 class="btn-primary bg-gradient-primary mr-2"
-                @click="selectedDeal = data.item, $refs['SplitDeal'].showModal()"
+                @click="selectedDeal = data.item, $refs['SplitDealModal'].showModal()"
               >
                 Split
               </b-button>
@@ -126,24 +126,22 @@
     
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Rate Found" msg=""></no-data>
-    <SplitDeal ref="SplitDeal" :dataSource="selectedDeal"/>
+    <SplitDealModal ref="SplitDealModal" :dataSource="selectedDeal"/>
 
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import SplitDeal from "./SplitDeal.vue"
+import SplitDealModal from "@/components/DealComponents/SplitDealModal.vue"
 export default {
   components: {
-    SplitDeal
+    SplitDealModal
   },
   data() {
     return {
       vm: {},
       countDown: 0,
-      stickyHeader: true,
-      noCollapse: true,
       selectedDeal: {},
       items: [],
       fields: [
@@ -154,7 +152,7 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "deal_id", label: "Rate Id"},
+        { key: "rate_id", label: "Rate Id"},
         { key: "curr_pair", label: "Curr Pair"},
         {
           key: "buy_sell",
@@ -183,17 +181,7 @@ export default {
         title: "",
         content: "",
       },
-      currencyPair: [
-          { "code": "USD/INR", "descr": "USD/INR"},
-          { "code": "EUR/USD", "descr": "EUR/USD"},
-          { "code": "USD/JPY", "descr": "USD/JPY"},
-          { "code": "GBP/USD", "descr": "GBP/USD"},
-          { "code": "AUD/USD", "descr": "AUD/USD"},
-          { "code": "USD/CAD", "descr": "USD/CAD"},
-          { "code": "USD/CNY", "descr": "USD/CNY"},
-          { "code": "USD/CHF", "descr": "USD/CHF"},
-          { "code": "USD/HKD", "descr": "USD/HKD"},
-      ],
+      currencyPair: this.$config.currencyPair,
     };
   },
   computed: {
@@ -239,10 +227,11 @@ export default {
       const vObj = {
         data:{
           "curr_pair": item.curr_pair || "",
+          "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
           "buy_sell": item.buy_sell || "",
           "fc_amount": item.fc_amount || "",
           "tenor": item.tenor || "",
-          "maturity_date": item.maturity_date || "",
+          "maturity_date": item.maturity_date || this.$today(),
           "interbank_rate": item.interbank_rate || "",
           "client_mrg": item.client_mrg || "",
           "bank_mrg": item.bank_mrg || "",
@@ -257,13 +246,15 @@ export default {
        .create({body: vObj})
         .then((response) => {
           this.$_successMessage(`Deal created successfully.`);
+          this.countDown = 0
         });
     },
     createDataObj(vm) {
 			return {
 				data: {
             "type":  vm.type ||"",
-					  "deal_id": vm.deal_id ||  "",
+					  "deal_id": Math.floor((Math.random() * 15000) + 1) || "",
+					  "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
             "trade_date": this.$today() ||  "",
             "curr_pair": vm.curr_pair || "",
             "buy_sell": vm.buy_sell || "",
@@ -365,21 +356,15 @@ export default {
       }
       const str = this.vm.deal_query;
       const strSplit  = str.split(" ")
-      const isCurrency = ["inr","usd"]
 
-      var input = 'user1@gmail.com';
-        var preferredPatterns = [
-          ".*@gmail.com$",
-          ".*@yahoo.com$",
-          ".*@live.com$"
-        ];
+      
         let CurrencyPatternArr = []
         this.currencyPair.forEach(item=>{
           CurrencyPatternArr.push(item.code)
         })
 
         var BuySellPattern = new RegExp(["BUY","SELL"].join('|'));
-        var TenorPattern = new RegExp(["SPOT"].join('|'));
+        var TenorPattern = new RegExp(["SPOT", "FWD"].join('|'));
         var CurrencyPattern = new RegExp(CurrencyPatternArr.join('|'));
         const numberCheck = function(num){ return (!isNaN(parseFloat(num)) && !isNaN(num - 0)) }
 
@@ -399,7 +384,7 @@ export default {
             this.$set(this.vm, 'fc_amount', vStr)
           }
 
-          if(vStr.length == 1 && vStr == "M" && numberCheck(strSplit[index-1])){
+          if(vStr.length == 2 && vStr == "MN" && numberCheck(strSplit[index-1])){
               this.$set(this.vm, 'fc_amount', strSplit[index-1] * 10000000)
               
           }
@@ -436,6 +421,7 @@ function getEl(vm) {
         rules: {},
         class: "span50",
         rules: {},
+        placeholder:"e.g 10 Mn USD/INR spot deal",
         handlers: {
           blur: [vm.prepareeQuery],
         },
@@ -451,6 +437,7 @@ function getEl(vm) {
         "ds-code": "code",
         "ds-name": "descr",
         customEvent: vm.fetchRateData,
+        rules: {required:true},
       },
       {
         type: "select",
@@ -464,6 +451,7 @@ function getEl(vm) {
         "ds-code": "code",
         "ds-name": "descr",
         customEvent:vm.fetchRateData,
+        rules: {required:true},
       },
       {
         type: "number",
@@ -473,18 +461,19 @@ function getEl(vm) {
         handlers: {
           blur: [vm.fetchRateData],
         },
+        rules: {required:true},
       },
       {
         type: "select",
         name: "tenor",
         label: "Tenor",
         static: true,
-        ds: [{ code: "SPOT", descr: "SPOT" },{ code: "FWD", descr: "FWD" }],
+        ds: [{ code: "SPOT", descr: "SPOT" },{ code: "FWD", descr: "FORWARD" }],
         "ds-code": "code",
         "ds-name": "descr",
         description: `${vm.vm.maturity_date || '-'}`,
         customEvent:vm.fetchRateData,
-        
+        rules: {required:true},
       },
       {
         type: "number",

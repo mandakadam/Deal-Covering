@@ -21,7 +21,7 @@ export default {
             .b-icon{margin-right: 0.5rem;}
             .list-group-item:not(.active){border: 0; }
             .router-link-exact-active {
-                  background-color: #f6f9fc;
+                  background-color: #ebebeb;
                   box-shadow: none; border: 0;
                   color: #344767;
                   }

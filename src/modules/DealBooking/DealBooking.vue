@@ -35,12 +35,12 @@
     </b-card>
     <div class="d-flex justify-content-between mb-3">
       <h5 class="text-light m-0">Deal Booking</h5>
-      <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1"><b-icon-shuffle /> Merge Deals</b-button>
+      <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1" @click="$refs['MergeDealModal'].showModal()"><b-icon-shuffle /> Merge Deals</b-button>
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
-        :sticky-header="stickyHeader"
-        :no-border-collapse="noCollapse"
+        :sticky-header="true"
+        :no-border-collapse="true"
         responsive
         size="sm"
         table-variant="light"
@@ -66,8 +66,8 @@
 
               <b-button
                 size="sm"
-                class="btn-primary bg-gradient-primary mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                class="btn-success bg-gradient-success mr-2"
+                @click="onCreateDeal(data.item)"
               >
                 Book Deal
               </b-button>
@@ -101,12 +101,19 @@
     </b-card>
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
+
+    <MergeDealModal ref="MergeDealModal" :dataSource="selectedItems[1]"/>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import MergeDealModal from "@/components/DealComponents/MergeDealModal.vue"
+
 export default {
+   components: {
+    MergeDealModal
+  },
   data() {
     return {
       vm: {},
@@ -114,6 +121,7 @@ export default {
       selectedItems:[],
       stickyHeader: true,
       noCollapse: true,
+      selectedDeal:{},
       items: [],
       fields: [
         {
@@ -201,6 +209,31 @@ export default {
         })
       }
       
+    },
+    onCreateDeal(item){
+      const vObj = {
+        data:{
+          "curr_pair": item.curr_pair || "",
+          "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
+          "buy_sell": item.buy_sell || "",
+          "fc_amount": item.fc_amount || "",
+          "tenor": item.tenor || "",
+          "maturity_date": item.maturity_date || this.$today(),
+          "interbank_rate": item.interbank_rate || "",
+          "client_mrg": item.client_mrg || "",
+          "bank_mrg": item.bank_mrg || "",
+          "fwd_points": item.fwd_points || "",
+          "client_rate": item.client_rate || "",
+          "fc2_amount": item.fc2_amount || "",
+        }
+      }
+
+      this.$credCAPI
+       .collection("deal/create")
+       .create({body: vObj})
+        .then((response) => {
+          this.$_successMessage(`Deal created successfully.`);
+        });
     },
     showInfoModal(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;

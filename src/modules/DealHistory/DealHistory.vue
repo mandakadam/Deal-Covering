@@ -39,8 +39,8 @@
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
-        :sticky-header="stickyHeader"
-        :no-border-collapse="noCollapse"
+        :sticky-header="true"
+        :no-border-collapse="true"
         responsive
         size="sm"
         table-variant="light"

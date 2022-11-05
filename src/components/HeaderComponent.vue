@@ -37,7 +37,8 @@ export default {
   },
   data(){
     return{
-        ActiveCompany: {code: "ASPT", label: 'Asian Paints [ASPT]'},
+        // ActiveCompany: {code: "ASPT", label: 'Asian Paints [ASPT]'},
+        ActiveCompany: null,
         ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]'}, {code: "AB", label: 'ABC Ltd'}]
     }
   }

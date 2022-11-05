@@ -35,12 +35,11 @@
     </b-card>
     <div class="d-flex justify-content-between mb-3">
       <h5 class="text-light m-0">Booked Deals</h5>
-      <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1"><b-icon-shuffle /> Merge Deals</b-button>
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
-        :sticky-header="stickyHeader"
-        :no-border-collapse="noCollapse"
+        :sticky-header="true"
+        :no-border-collapse="true"
         responsive
         size="sm"
         table-variant="light"
@@ -67,15 +66,15 @@
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                @click="selectedDeal = data.item, $refs['AuthoriseModal'].showModal()"
               >
                 Authorise
               </b-button>
 
               <b-button
                 size="sm"
-                class="btn-primary bg-gradient-primary mr-1"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                class="btn-primary bg-gradient-primary mr-2"
+                @click="selectedDeal = data.item, $refs['SplitDealModal'].showModal()"
               >
                 Split
               </b-button>
@@ -109,12 +108,21 @@
     </b-card>
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
+
+    <SplitDealModal ref="SplitDealModal" :dataSource="selectedDeal"/>
+    <AuthoriseModal ref="AuthoriseModal" :dataSource="selectedDeal"/>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import SplitDealModal from "@/components/DealComponents/SplitDealModal.vue"
+import AuthoriseModal from "@/components/DealComponents/AuthoriseModal.vue"
 export default {
+  components: {
+    SplitDealModal,
+    AuthoriseModal
+  },
   data() {
     return {
       vm: {},
@@ -122,6 +130,7 @@ export default {
       selectedItems:[],
       stickyHeader: true,
       noCollapse: true,
+      selectedDeal:{},
       items: [],
       fields: [
         {
