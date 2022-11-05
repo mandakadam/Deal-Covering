@@ -35,7 +35,7 @@ export default {
   data(){
     return{
         ActiveCompany: null,
-        ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]',}, {code: "CT", label: 'Credence Team [CT]'}]
+        ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]',}, {code: "AB", label: 'ABC Ltd'}]
     }
   }
 }

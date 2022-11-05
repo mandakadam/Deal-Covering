@@ -41,7 +41,7 @@
                 >Clear Fields</b-button
               >
               <b-button type="submit" size="sm" variant="success" class="btn-warning text-white bg-gradient-warning"
-                :disabled="!Object.keys(ActiveCompany).length">Book Rate</b-button
+               >Book Rate</b-button
               >
             </div>
           </div>
@@ -159,7 +159,7 @@ export default {
         { key: "fc_amount", label: "FC Amount", tdClass: "text-right" },
         { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
         { key: "tenor", label: "Tenor"},
-        { key: "maturity_date", label: "Period" },
+        { key: "trade_date", label: "Trade Date" },
         {
           key: "interbank_rate",
           label: "Interbank Rate",
@@ -246,7 +246,7 @@ export default {
 				data: {
             "type":  vm.type ||"",
 					  "deal_id": vm.deal_id ||  "",
-            "trade_date": vm.trade_date ||  "",
+            "trade_date": this.$today() ||  "",
             "curr_pair": vm.curr_pair || "",
             "buy_sell": vm.buy_sell || "",
             "fc_amount": vm.fc_amount || "",
@@ -283,6 +283,7 @@ export default {
           this.$set(this.vm, "fc2_amount", "")
           this.$set(this.vm, "fwd_points", "")
           this.$set(this.vm, "interbank_rate", "")
+          this.$set(this.vm, "maturity_date", "")
       }
       else{
         const vObj = {
@@ -305,6 +306,7 @@ export default {
            this.$set(this.vm, "fc2_amount", response.fc2_amount || "")
            this.$set(this.vm, "fwd_points", response.fwd_points || "")
            this.$set(this.vm, "interbank_rate", response.interbank_rate || "")
+           this.$set(this.vm, "maturity_date", response.maturity_date || "")
            this.$store.commit("loading", false);
         });
       }
@@ -414,8 +416,9 @@ function getEl(vm) {
         ds: [{ code: "SPOT", descr: "SPOT" }],
         "ds-code": "code",
         "ds-name": "descr",
-        description: `(${vm.$today()})`,
+        description: `${vm.vm.maturity_date || '-'}`,
         customEvent:vm.fetchRateData,
+        
       },
       {
         type: "number",
