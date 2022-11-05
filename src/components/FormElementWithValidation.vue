@@ -19,7 +19,7 @@
 		v-if="vshow()"
 	>
 		<b-form-group
-			:class="`form-group-${item['type']}`"
+			:class="`form-group-${item['type']} ${item['hideLabel'] ? 'mb-0' : ''}`"
 			:id="`input-group-${item['name']}`"
 			:label-for="item['name']"
 			:description="item['description']"
@@ -27,13 +27,13 @@
 		>
 			<template v-slot:label>
 				{{
-					item["type"] != "checkbox" && item["type"] != "radio"
+						!item['hideLabel'] && item["type"] != "checkbox" && item["type"] != "radio"
 						? (locale && locale.hasOwnProperty(item["name"]) ? locale[item["name"]] : item["label"]) || item["name"]
 						: ""
 				}}
 				<span
 					v-if="
-						item['type'] != 'checkbox' &&
+						!item['hideLabel'] && item['label'] != '' && item['type'] != 'checkbox' &&
 						item['type'] != 'radio' &&
 						{ ...rules, ...((customValidation.validate || {})[item['name']] || {}) }
 							.required === true

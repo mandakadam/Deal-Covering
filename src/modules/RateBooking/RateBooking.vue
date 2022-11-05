@@ -2,7 +2,7 @@
   <section>
     <b-card class="form-wrapper mb-3 border-radius-lg" body-class="pt-3 pb-0">
       <ValidationObserver ref="formObserver" v-slot="{ handleSubmit }">
-        <b-form autocomplete="off" @submit.prevent="handleSubmit(onRateCreate)">
+        <b-form autocomplete="off" @submit.prevent="handleSubmit(onCreateRate)">
           <input
             id="designatedtype"
             v-model="vm.designatedtype"
@@ -84,14 +84,14 @@
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="onDealCreate(data.item)"
+                @click="onCreateDeal(data.item)"
               >
                 Book Deal
               </b-button>
               <b-button
                 size="sm"
                 class="btn-primary bg-gradient-primary mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                @click="selectedDeal = data.item, $refs['SplitDeal'].showModal()"
               >
                 Split
               </b-button>
@@ -120,24 +120,31 @@
       >
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
+      
     </b-card>
 
-
+    
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Rate Found" msg=""></no-data>
-    
+    <SplitDeal ref="SplitDeal" :dataSource="selectedDeal"/>
+
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import SplitDeal from "./SplitDeal.vue"
 export default {
+  components: {
+    SplitDeal
+  },
   data() {
     return {
       vm: {},
       countDown: 0,
       stickyHeader: true,
       noCollapse: true,
+      selectedDeal: {},
       items: [],
       fields: [
         {
@@ -186,7 +193,7 @@ export default {
           { "code": "USD/CNY", "descr": "USD/CNY"},
           { "code": "USD/CHF", "descr": "USD/CHF"},
           { "code": "USD/HKD", "descr": "USD/HKD"},
-      ]
+      ],
     };
   },
   computed: {
@@ -214,7 +221,7 @@ export default {
            this.items = response || [];
         });
     },
-    onRateCreate(){
+    onCreateRate(){
       const vObj = this.createDataObj(this.vm);
       
       this.$credCAPI
@@ -228,7 +235,7 @@ export default {
           this.$_successMessage(`Rate booked successfully.`);
         });
     },
-    onDealCreate(item){
+    onCreateDeal(item){
       const vObj = {
         data:{
           "curr_pair": item.curr_pair || "",
@@ -331,7 +338,6 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-
     cellValue(data) {
       if (!data || data.value == null || data.value == "") return "-";
 
@@ -400,7 +406,8 @@ export default {
         })
 
 
-    }
+    },
+
   },
 };
 
@@ -472,7 +479,7 @@ function getEl(vm) {
         name: "tenor",
         label: "Tenor",
         static: true,
-        ds: [{ code: "SPOT", descr: "SPOT" }],
+        ds: [{ code: "SPOT", descr: "SPOT" },{ code: "FWD", descr: "FWD" }],
         "ds-code": "code",
         "ds-name": "descr",
         description: `${vm.vm.maturity_date || '-'}`,

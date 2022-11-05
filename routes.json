@@ -4,5 +4,6 @@
     "/deal/read?*":"/deal_read",
     "/deal/create":"/deal_read",
     "/deal/delete/:id":"/deal_read/:id",
-    "/deal/rate/read?*":"/deal_rate_read"
+    "/deal/rate/read?*":"/deal_rate_read",
+    "/deal/split/create":"/deal_split_create"
 }
