@@ -176,6 +176,17 @@ export default {
         title: "",
         content: "",
       },
+      currencyPair: [
+          { "code": "USD/INR", "descr": "USD/INR"},
+          { "code": "EUR/USD", "descr": "EUR/USD"},
+          { "code": "USD/JPY", "descr": "USD/JPY"},
+          { "code": "GBP/USD", "descr": "GBP/USD"},
+          { "code": "AUD/USD", "descr": "AUD/USD"},
+          { "code": "USD/CAD", "descr": "USD/CAD"},
+          { "code": "USD/CNY", "descr": "USD/CNY"},
+          { "code": "USD/CHF", "descr": "USD/CHF"},
+          { "code": "USD/HKD", "descr": "USD/HKD"},
+      ]
     };
   },
   computed: {
@@ -342,6 +353,54 @@ export default {
         );
       }
     },
+    prepareeQuery(){
+      if(!this.vm.deal_query){
+        return
+      }
+      const str = this.vm.deal_query;
+      const strSplit  = str.split(" ")
+      const isCurrency = ["inr","usd"]
+
+      var input = 'user1@gmail.com';
+        var preferredPatterns = [
+          ".*@gmail.com$",
+          ".*@yahoo.com$",
+          ".*@live.com$"
+        ];
+        let CurrencyPatternArr = []
+        this.currencyPair.forEach(item=>{
+          CurrencyPatternArr.push(item.code)
+        })
+
+        var BuySellPattern = new RegExp(["BUY","SELL"].join('|'));
+        var TenorPattern = new RegExp(["SPOT"].join('|'));
+        var CurrencyPattern = new RegExp(CurrencyPatternArr.join('|'));
+        const numberCheck = function(num){ return (!isNaN(parseFloat(num)) && !isNaN(num - 0)) }
+
+        strSplit.forEach((item, index)=>{
+          const vStr = item.toString().toUpperCase()
+          if(BuySellPattern.test(vStr)){
+              this.$set(this.vm, 'buy_sell', vStr)
+          }
+          if(TenorPattern.test(vStr)){
+              this.$set(this.vm, 'tenor', vStr)
+          }
+          if(CurrencyPattern.test(vStr)){
+            this.$set(this.vm, 'curr_pair', vStr)
+          }
+          
+          if(numberCheck(item)){
+            this.$set(this.vm, 'fc_amount', vStr)
+          }
+
+          if(vStr.length == 1 && vStr == "M" && numberCheck(strSplit[index-1])){
+              this.$set(this.vm, 'fc_amount', strSplit[index-1] * 10000000)
+              
+          }
+        })
+
+
+    }
   },
 };
 
@@ -365,11 +424,14 @@ function getEl(vm) {
 
       {
         type: "text",
-        name: "deal",
+        name: "deal_query",
         label: "Enter Deal",
         rules: {},
         class: "span50",
-        rules: {required: true }
+        rules: {},
+        handlers: {
+          blur: [vm.prepareeQuery],
+        },
       },
     ],
     DealEl: [
@@ -378,10 +440,7 @@ function getEl(vm) {
         name: "curr_pair",
         label: "Curr Pair",
         static: true,
-        ds: [
-          { code: "USD/INR", descr: "USD/INR" },
-          { code: "EUR/INR", descr: "EUR/INR" },
-        ],
+        ds: vm.currencyPair,
         "ds-code": "code",
         "ds-name": "descr",
         customEvent: vm.fetchRateData,

@@ -56,6 +56,25 @@
       "client_rate": "79.8768",
       "fc2_amount": "798768000",
       "id": 3
+    },
+    {
+      "type": "",
+      "deal_id": "",
+      "trade_date": "11-05-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": 100000000,
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "10",
+      "client_rate": "79.8768",
+      "fc2_amount": "798768000",
+      "id": 4
     }
   ],
   "deal_read": [],
