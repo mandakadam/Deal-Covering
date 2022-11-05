@@ -351,6 +351,7 @@ color: #67748e;
     }
 
 }
+.loading{position: fixed; left: 0; top:0; width: 100%; height: 100%; color: var(--yellow); background: rgba(0, 0, 0, 0.1); display: grid; place-content: center; z-index: 1000;}
 
 .custom_table{
     font-size: 11px;

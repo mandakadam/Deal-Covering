@@ -12,14 +12,11 @@
             <button @click="hide" type="button" aria-label="Close" class="close text-dark"><b-icon-x /></button>
           </header>
              <SidebarComponent/>
-         </template>
-     
-        <template>
-       <div class="text-center mt-5">
+              <div class="text-center mt-5 pt-5">
         <img src="@/assets/img/icon-documentation.svg" alt="" height="100"/>
        </div>
-      </template>
-       
+         </template>
+     
       </b-sidebar>
     </aside>
 

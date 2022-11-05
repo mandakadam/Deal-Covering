@@ -32,10 +32,13 @@
 <script>
 export default {
   props:["sidebarFlag"],
+  created(){
+    this.$store.commit('onSetActiveCompany', this.ActiveCompany)
+  },
   data(){
     return{
-        ActiveCompany: null,
-        ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]',}, {code: "AB", label: 'ABC Ltd'}]
+        ActiveCompany: {code: "ASPT", label: 'Asian Paints [ASPT]'},
+        ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]'}, {code: "AB", label: 'ABC Ltd'}]
     }
   }
 }
