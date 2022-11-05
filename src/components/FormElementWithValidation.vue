@@ -346,17 +346,17 @@ export default {
 					? `${this.locale[this.item["label"]]}`
 					: this.item["placeholder"] || this.item["label"]
 
-			let str = 
-			this.item.type == "select" || 
-			this.item.type == "remote-select" ||
-			this.item.type == "date" ||
-			this.item.type == "datetime" ||
-			this.item.type == "time12" ||
-			this.item.type == "time24" ||
-			this.item.type == "time" 
-			? `${placeholder_str}` : `${placeholder_str}`;
+			// let str = 
+			// this.item.type == "select" || 
+			// this.item.type == "remote-select" ||
+			// this.item.type == "date" ||
+			// this.item.type == "datetime" ||
+			// this.item.type == "time12" ||
+			// this.item.type == "time24" ||
+			// this.item.type == "time" 
+			// ? "Select" : `Enter ${placeholder_str}`;
 
-			return 	str
+			return 	placeholder_str
 		},
 		rules() {
 			if (this.item["type"] == "number") {
@@ -384,6 +384,8 @@ export default {
 		// Handles internal model changes.
 		innerValue(newVal) {
 			this.$emit("input", newVal || "");
+			
+			this.$emit("customEvent", true);
 
 			if (this.item.type == "select" && this.dataset && newVal) {
 				this.innerValue = newVal.toString();

@@ -16,7 +16,8 @@ export default new Vuex.Store({
     validationErrors: [],
     checkedItemList: [],
     selectedFilters: [],
-    parameters: {}
+    parameters: {},
+    ActiveCompany: {}
   },
   mutations: {
     loading(state, isLoading) {
@@ -62,41 +63,18 @@ export default new Vuex.Store({
         state.checkedItemList = [];
         state.checkedItemList.length = 0;
       }
-    }
+    },
+    onSetActiveCompany(state, val) {
+      console.log(val)
+      if (val) {
+        state.ActiveCompany = val;
+      }
+      else {
+        state.ActiveCompany = "";
+      }
+    },
   },
   actions: {
-    getParameters({ state }, config) {
-      const Parameters = Object.entries({
-        "FUNDREGISTRY.AMOUNTROUND": "amountround",
-      });
-      const parameters = Parameters.map(parameter => parameter[0]);
-      const BODY = {
-        body: {
-          "filter": [{ "field": "paramname", "value": parameters, "asgn": "in" }]
-        },
-      }
-
-      Vue.$credCAPI
-        .collection("registry/parameter/read")
-        .read(BODY)
-        .then((result) => {
-          if (result.message !== undefined || result.status === "unsuccess")
-            return;
-          Parameters.map(parameter => {
-            let params = result[parameter[0]];
-            if (isUndef(params)) return;
-            if (params.PARAMVALUE.toLowerCase() === "true") {
-              state.parameters[parameter[1]] = true;
-            }
-            if (params.PARAMVALUE.toLowerCase() === "false") {
-              state.parameters[parameter[1]] = false;
-            }
-            state.parameters[parameter[1]] = toNumber(params.PARAMVALUE);
-
-            config = Object.assign(config, {}, state.parameters);
-            return config;
-          });
-        })
-    }
+   
   },
 })

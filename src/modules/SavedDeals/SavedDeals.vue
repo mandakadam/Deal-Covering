@@ -59,7 +59,11 @@
         </b-form>
       </ValidationObserver>
     </b-card>
-    <b-card body-class="p-0" class="shadow border-radius-lg">
+    <div class="d-flex justify-content-between mb-3">
+      <h5 class="text-light m-0">Saved Deals</h5>
+      <!-- <b-button size="sm" variant="danger"><b-icon-x-circle /> Close All Deals</b-button> -->
+    </div>
+    <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
         :sticky-header="stickyHeader"
         :no-border-collapse="noCollapse"
@@ -121,10 +125,12 @@
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
     </b-card>
-  </section>
+    <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
+    <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>  </section>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -173,6 +179,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["ActiveCompany"]),
     el() {
       return getEl(this);
     },
@@ -185,17 +192,15 @@ export default {
     },
   },
   created() {
-    this.fetchDealData();
+    this.fetchAllDeals();
   },
   methods: {
-    fetchDealData() {
+    fetchAllDeals() {
       this.$credCAPI
         .collection("deal/read")
         .read()
         .then((response) => {
-          if (response.hasOwnProperty("data")) {
-            this.items = response.data;
-          }
+          this.items = response || [];
         });
     },
     countDownTimer() {
@@ -251,14 +256,14 @@ function getEl(vm) {
         type: "radio",
         name: "type",
         label: "Interbank",
-        rules: "",
+        rules: {},
         class: "align-self-center",
       },
       {
         type: "radio",
         name: "type",
         label: "Client",
-        rules: "",
+        rules: {},
         class: "align-self-center",
       },
 
@@ -266,7 +271,7 @@ function getEl(vm) {
         type: "text",
         name: "deal",
         label: "Enter Deal",
-        rules: "",
+        rules: {},
         class: "span50",
       },
     ],
@@ -299,7 +304,7 @@ function getEl(vm) {
         type: "number",
         name: "fc_amount",
         label: "Amount",
-        rules: "",
+        rules: {},
       },
       {
         type: "select",
@@ -315,13 +320,13 @@ function getEl(vm) {
         type: "number",
         label: "Client Mrg",
         name: "client_mrg",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "interbank_rate",
         label: "Interbank Rate",
-        rules: "",
+        rules: {},
         handlers: {
           blur: [vm.onChange_interbank_rate],
         },
@@ -330,19 +335,19 @@ function getEl(vm) {
         type: "number",
         name: "bank_mrg",
         label: "Bank Mrg",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "fwd_points",
         label: "Fwd Points",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "client_rate",
         label: "Client Rate",
-        rules: "",
+        rules: {},
         description: vm.vm.client_rate
           ? vm.$options.filters.convertCommaString(
               parseFloat(vm.vm.client_rate * 1000000),

@@ -34,10 +34,10 @@
       </ValidationObserver>
     </b-card>
     <div class="d-flex justify-content-between mb-3">
-      <h5 class="text-light m-0">Open Rates</h5>
-      <b-button size="sm" variant="danger" class="mt-n1 bg-gradient-danger"><b-icon-x-circle /> Close All Deals</b-button>
+      <h5 class="text-light m-0">Deals Listing</h5>
+      <b-button size="sm" variant="danger" @click="onDeleteAll()" :disabled="!Object.keys(ActiveCompany).length" class="mt-n1 bg-gradient-danger"><b-icon-x-circle /> Close All Deals</b-button>
     </div>
-    <b-card body-class="p-0" class="shadow border-radius-lg">
+    <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
         :sticky-header="stickyHeader"
         :no-border-collapse="noCollapse"
@@ -62,6 +62,7 @@
               <b-button
                 size="sm"
                 class="btn-danger bg-gradient-danger"
+                @click="onDelete(data.item.id)"
               >
                 Close Deal
               </b-button>
@@ -93,10 +94,13 @@
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
     </b-card>
+    <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
+    <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
   </section>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -142,6 +146,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["ActiveCompany"]),
     el() {
       return getEl(this);
     },
@@ -154,24 +159,53 @@ export default {
     },
   },
   created() {
-    this.fetchDealData();
+    this.fetchAllDeals();
   },
   methods: {
-    fetchDealData() {
+    fetchAllDeals() {
       this.$credCAPI
         .collection("deal/read")
         .read()
         .then((response) => {
-          if (response.hasOwnProperty("data")) {
-            this.items = response.data;
-          //   this.items = this.items.map(element => {
-          //     return {
-          //       sortable: true,
-          //       ...element
-          //     }
-          // });
-          }
+           this.items = response || [];
         });
+    },
+    onDelete(id){
+      this.$_confirmMessage({size:"sm", msg: "Are you sure you want to close?"})
+        .then((value) => {
+          if (value) {
+               this.$credCAPI
+              .collection(`deal/delete/${id}`)
+            .delete()
+              .then((response) => {
+                if(response){
+                  this.fetchAllDeals();
+                  this.$_successMessage(`Deal closed successfully`);
+                }
+              });
+          }
+        })
+    },
+    onDeleteAll(){
+      
+         this.$_confirmMessage({size:"sm", msg: "Are you sure you want to close?"})
+        .then((value) => {
+          if (value) {
+            this.items.forEach(item=>{
+               this.$credCAPI
+                  .collection(`deal/delete/${item.id}`)
+                  .delete()
+                  .then((response) => {
+                    if(item.deal_id == this.items[this.items.length-1].deal_id){
+                        this.fetchAllDeals();
+                        this.$_successMessage(`Deal closed successfully`);
+                    }
+                  });
+                })
+          }
+        
+      })
+     
     },
     countDownTimer() {
       if (this.countDown > 0) {
@@ -238,7 +272,7 @@ function getEl(vm) {
         type: "date",
         name: "booking_date",
         label: "Booking Date",
-        rules: "",
+        rules: {},
         value: vm.$today()
       },
       {

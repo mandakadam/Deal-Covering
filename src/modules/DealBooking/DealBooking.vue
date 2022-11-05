@@ -34,10 +34,10 @@
       </ValidationObserver>
     </b-card>
     <div class="d-flex justify-content-between mb-3">
-      <h5 class="text-light m-0">Open Rates</h5>
+      <h5 class="text-light m-0">Deal Booking</h5>
       <b-button size="sm" variant="dark" class="mt-n1" :disabled="selectedItems.length < 1"><b-icon-shuffle /> Merge Deals</b-button>
     </div>
-    <b-card body-class="p-0" class="shadow border-radius-lg">
+    <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
         :sticky-header="stickyHeader"
         :no-border-collapse="noCollapse"
@@ -99,10 +99,13 @@
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
     </b-card>
+    <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
+    <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
   </section>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -152,6 +155,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["ActiveCompany"]),
     el() {
       return getEl(this);
     },
@@ -164,23 +168,15 @@ export default {
     },
   },
   created() {
-    this.fetchDealData();
+    this.fetchAllDeals();
   },
   methods: {
-    fetchDealData() {
+    fetchAllDeals() {
       this.$credCAPI
         .collection("deal/read")
         .read()
         .then((response) => {
-          if (response.hasOwnProperty("data")) {
-            this.items = response.data;
-          //   this.items = this.items.map(element => {
-          //     return {
-          //       sortable: true,
-          //       ...element
-          //     }
-          // });
-          }
+           this.items = response || [];
         });
     },
     countDownTimer() {
@@ -247,7 +243,7 @@ function getEl(vm) {
         type: "date",
         name: "booking_date",
         label: "Booking Date",
-        rules: "",
+        rules: {},
         value: vm.$today()
       },
       {

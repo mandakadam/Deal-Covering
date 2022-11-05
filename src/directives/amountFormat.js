@@ -77,14 +77,14 @@ function addNumberMask(el, binding, vnode) {
     el.addEventListener('focus', el.focusListener);
     el.addEventListener('keypress', el.onkeypressListener);
     el.addEventListener('keyup', el.keyupListener);
-    el.addEventListener('blur', el.blurListener, true);
+    // el.addEventListener('blur', el.blurListener, true);
 }
 
 function removeAllEventListeners(el) {
     el.removeEventListener('focus', el.focusListener);
     el.removeEventListener('keypress', el.onkeypressListener);
     el.removeEventListener('keyup', el.keyupListener);
-    el.removeEventListener('blur', el.blurListener);
+    // el.removeEventListener('blur', el.blurListener);
 }
 
 export default {

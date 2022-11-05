@@ -3,8 +3,9 @@
    <b-button variant="default" v-b-toggle.sidebar-1 class="p-0 text-white" v-if="!sidebarFlag">
       <b-icon-list />
    </b-button>
-    <b-navbar-brand href="#/" class="ml-2"><b class="text-primary-light">
-      <img src="@/assets/img/Credence-Analytics-Logo.svg" height="30"/>  Trader</b> View
+    <b-navbar-brand href="#/" class="ml-2 align-items-center d-flex">
+      <img src="@/assets/img/Credence-Analytics-Logo.svg" height="28" class="mr-2"/>  
+      <span ><b >Trader</b> View</span>
     </b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
@@ -12,7 +13,7 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto align-items-center">
         <div class="custom_search mr-3"> 
-        <v-select class="border-radius-lg" placeholder="Corporate Search" size="sm" theme="dark" :options="['Asian Paints [ASPT]', 'Asian Paints [ASPT]']" style="min-width:200px"></v-select>
+        <v-select @input="$store.commit('onSetActiveCompany', ActiveCompany)" v-model="ActiveCompany" class="border-radius-lg" placeholder="Corporate Search" size="sm" theme="dark" :options="ActiveCompanyList" style="min-width:200px"></v-select>
         </div>
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
@@ -33,7 +34,8 @@ export default {
   props:["sidebarFlag"],
   data(){
     return{
-      
+        ActiveCompany: null,
+        ActiveCompanyList: [{code: "ASPT", label: 'Asian Paints [ASPT]',}, {code: "CT", label: 'Credence Team [CT]'}]
     }
   }
 }
@@ -50,7 +52,7 @@ export default {
   .vs__dropdown-toggle{border-radius: 6px; border: 0; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
             .vs__selected{font-size: 12px; }
             .vs__search, .vs__search:focus{font-size: 12px;} 
-            .vs__actions{transform: scale(0.6); }
+            .vs__actions{transform: scale(0.7); }
         }
       }
 </style>

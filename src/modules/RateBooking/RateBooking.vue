@@ -1,8 +1,8 @@
 <template>
   <section>
     <b-card class="form-wrapper mb-3 border-radius-lg" body-class="pt-3 pb-0">
-      <ValidationObserver ref="formObserver">
-        <b-form autocomplete="off" @submit.prevent="$de_genBidRate">
+      <ValidationObserver ref="formObserver" v-slot="{ handleSubmit }">
+        <b-form autocomplete="off" @submit.prevent="handleSubmit(onRateCreate)">
           <input
             id="designatedtype"
             v-model="vm.designatedtype"
@@ -37,11 +37,11 @@
                 size="sm"
                 variant="default"
                 class="bg-light mr-3"
-                @click="(vm = {}), (countDown = 0)"
+                @click="(vm = {}), (countDown = 0),  $refs.formObserver.reset();"
                 >Clear Fields</b-button
               >
-              <b-button size="sm" variant="success" class="btn-warning text-white bg-gradient-warning" @click="vm = {}"
-                >Book Rate</b-button
+              <b-button type="submit" size="sm" variant="success" class="btn-warning text-white bg-gradient-warning"
+                :disabled="!Object.keys(ActiveCompany).length">Book Rate</b-button
               >
             </div>
           </div>
@@ -53,13 +53,14 @@
               v-model="vm[item.name]"
               :dataset="ds[item.ds]"
               formControlSize="sm"
+              @customEvent="item.customEvent ? item.customEvent.call() : null"
             >
             </FormElementWithValidation>
           </div>
         </b-form>
       </ValidationObserver>
     </b-card>
-    <b-card body-class="p-0" class="shadow border-radius-lg">
+    <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
         :sticky-header="stickyHeader"
         :no-border-collapse="noCollapse"
@@ -83,7 +84,7 @@
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="showInfoModal(data.item, data.index, $event.target)"
+                @click="onDealCreate(data.item)"
               >
                 Book Deal
               </b-button>
@@ -110,7 +111,6 @@
 
         <!-- We are using utility class `text-nowrap` to help illustrate horizontal scrolling -->
       </b-table>
-
       <!-- Info modal -->
       <b-modal
         :id="infoModal.id"
@@ -121,10 +121,16 @@
         <pre>{{ infoModal.content }}</pre>
       </b-modal>
     </b-card>
+
+
+    <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
+    <no-data v-else-if="!items.length" title="No Rate Found" msg=""></no-data>
+    
   </section>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -173,6 +179,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["ActiveCompany"]),
     el() {
       return getEl(this);
     },
@@ -185,19 +192,77 @@ export default {
     },
   },
   created() {
-    this.fetchDealData();
+    this.fetchAllRates();
   },
   methods: {
-    fetchDealData() {
+    fetchAllRates() {
       this.$credCAPI
-        .collection("deal/read")
+        .collection("rate/read")
         .read()
         .then((response) => {
-          if (response.hasOwnProperty("data")) {
-            this.items = response.data;
-          }
+           this.items = response || [];
         });
     },
+    onRateCreate(){
+      const vObj = this.createDataObj(this.vm);
+      
+      this.$credCAPI
+        .collection("rate/create")
+       .create({body: vObj})
+        .then((response) => {
+          this.fetchAllRates()
+          this.vm.rate_id = response.rate_id || "2022103000001"
+          this.vm = {}
+          this.$refs.formObserver.reset()
+          this.$_successMessage(`Rate booked successfully.`);
+        });
+    },
+    onDealCreate(item){
+      const vObj = {
+        data:{
+          "curr_pair": item.curr_pair || "",
+          "buy_sell": item.buy_sell || "",
+          "fc_amount": item.fc_amount || "",
+          "tenor": item.tenor || "",
+          "maturity_date": item.maturity_date || "",
+          "interbank_rate": item.interbank_rate || "",
+          "client_mrg": item.client_mrg || "",
+          "bank_mrg": item.bank_mrg || "",
+          "fwd_points": item.fwd_points || "",
+          "client_rate": item.client_rate || "",
+          "fc2_amount": item.fc2_amount || "",
+        }
+      }
+
+      this.$credCAPI
+       .collection("deal/create")
+       .create({body: vObj})
+        .then((response) => {
+          this.$_successMessage(`Deal created successfully.`);
+        });
+    },
+    createDataObj(vm) {
+			return {
+				data: {
+            "type":  vm.type ||"",
+					  "deal_id": vm.deal_id ||  "",
+            "trade_date": vm.trade_date ||  "",
+            "curr_pair": vm.curr_pair || "",
+            "buy_sell": vm.buy_sell || "",
+            "fc_amount": vm.fc_amount || "",
+            "open_amount": vm.open_amount || "",
+            "open_amount_per": vm.open_amount_per || "",
+            "tenor": vm.tenor || "",
+            "maturity_date": vm.maturity_date || "",
+            "interbank_rate": vm.interbank_rate || "",
+            "client_mrg": vm.client_mrg || "",
+            "bank_mrg": vm.bank_mrg || "",
+            "fwd_points": vm.fwd_points || "",
+            "client_rate": vm.client_rate || "",
+            "fc2_amount": vm.fc2_amount || ""
+				}
+			};
+		},
     countDownTimer() {
       if (this.countDown > 0) {
         setTimeout(() => {
@@ -209,6 +274,40 @@ export default {
     onChange_interbank_rate() {
       this.countDown = 10;
       this.countDownTimer();
+    },
+    fetchRateData() {
+      if(!(this.vm.curr_pair && this.vm.buy_sell && this.vm.tenor && this.vm.fc_amount)){
+          this.$set(this.vm, "bank_mrg", "")
+          this.$set(this.vm, "client_mrg", "")
+          this.$set(this.vm, "client_rate", "")
+          this.$set(this.vm, "fc2_amount", "")
+          this.$set(this.vm, "fwd_points", "")
+          this.$set(this.vm, "interbank_rate", "")
+      }
+      else{
+        const vObj = {
+          body: {
+            "curr_pair": this.vm.curr_pair || '',
+            "buy_sell": this.vm.buy_sell || '',
+            "fc_amount": this.vm.fc_amount || '',
+            "tenor": this.vm.tenor || '',
+            "rates": this.items
+            }
+        }
+      this.$store.commit("loading", true);
+      this.$credCAPI
+        .collection("deal/rate/read")
+        .read(vObj)
+        .then((response) => {
+           this.$set(this.vm, "bank_mrg", response.bank_mrg || "")
+           this.$set(this.vm, "client_mrg", response.client_mrg || "")
+           this.$set(this.vm, "client_rate", response.client_rate || "")
+           this.$set(this.vm, "fc2_amount", response.fc2_amount || "")
+           this.$set(this.vm, "fwd_points", response.fwd_points || "")
+           this.$set(this.vm, "interbank_rate", response.interbank_rate || "")
+           this.$store.commit("loading", false);
+        });
+      }
     },
     showInfoModal(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
@@ -251,14 +350,14 @@ function getEl(vm) {
         type: "radio",
         name: "type",
         label: "Interbank",
-        rules: "",
+        rules: {},
         class: "align-self-center",
       },
       {
         type: "radio",
         name: "type",
         label: "Client",
-        rules: "",
+        rules: {},
         class: "align-self-center",
       },
 
@@ -266,8 +365,9 @@ function getEl(vm) {
         type: "text",
         name: "deal",
         label: "Enter Deal",
-        rules: "",
+        rules: {},
         class: "span50",
+        rules: {required: true }
       },
     ],
     DealEl: [
@@ -282,6 +382,7 @@ function getEl(vm) {
         ],
         "ds-code": "code",
         "ds-name": "descr",
+        customEvent: vm.fetchRateData,
       },
       {
         type: "select",
@@ -294,12 +395,16 @@ function getEl(vm) {
         ],
         "ds-code": "code",
         "ds-name": "descr",
+        customEvent:vm.fetchRateData,
       },
       {
         type: "number",
         name: "fc_amount",
         label: "Amount",
-        rules: "",
+        rules: {},
+        handlers: {
+          blur: [vm.fetchRateData],
+        },
       },
       {
         type: "select",
@@ -310,18 +415,19 @@ function getEl(vm) {
         "ds-code": "code",
         "ds-name": "descr",
         description: `(${vm.$today()})`,
+        customEvent:vm.fetchRateData,
       },
       {
         type: "number",
         label: "Client Mrg",
         name: "client_mrg",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "interbank_rate",
         label: "Interbank Rate",
-        rules: "",
+        rules: {},
         handlers: {
           blur: [vm.onChange_interbank_rate],
         },
@@ -330,19 +436,19 @@ function getEl(vm) {
         type: "number",
         name: "bank_mrg",
         label: "Bank Mrg",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "fwd_points",
         label: "Fwd Points",
-        rules: "",
+        rules: {},
       },
       {
         type: "number",
         name: "client_rate",
         label: "Client Rate",
-        rules: "",
+        rules: {},
         description: vm.vm.client_rate
           ? vm.$options.filters.convertCommaString(
               parseFloat(vm.vm.client_rate * 1000000),
