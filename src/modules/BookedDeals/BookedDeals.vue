@@ -57,11 +57,11 @@
           >
           <slot v-else :name="field.key" :data="data.item">
             <b-navbar class="text-nowrap p-0">
-              <b-form-checkbox
+              <!-- <b-form-checkbox
                 class="mr-2"
                 @change="(e)=>onSelectItems(e, data.item)"
               >
-              </b-form-checkbox>
+              </b-form-checkbox> -->
 
               <b-button
                 size="sm"

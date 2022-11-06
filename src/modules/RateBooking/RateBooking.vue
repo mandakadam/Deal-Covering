@@ -398,6 +398,7 @@ function getEl(vm) {
         label: "Interbank",
         rules: {},
         class: "align-self-center",
+        "checked-val": "Interbank"
       },
       {
         type: "radio",
@@ -405,6 +406,8 @@ function getEl(vm) {
         label: "Client",
         rules: {},
         class: "align-self-center",
+         "checked-val": "Client",
+        value:"Client"
       },
 
       {
