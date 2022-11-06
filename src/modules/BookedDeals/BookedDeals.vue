@@ -140,7 +140,7 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "deal_id", label: "Rate Id" },
+        { key: "rate_id", label: "Rate Id" },
         { key: "curr_pair", label: "Curr Pair" },
         {
           key: "buy_sell",

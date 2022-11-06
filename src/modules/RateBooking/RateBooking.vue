@@ -217,6 +217,7 @@ export default {
        .create({body: vObj})
         .then((response) => {
           this.fetchAllRates()
+          this.countDown = 0
           this.vm.rate_id = response.rate_id || "2022103000001"
           this.vm = {}
           this.$refs.formObserver.reset()
@@ -225,19 +226,8 @@ export default {
     },
     onCreateDeal(item){
       const vObj = {
-        data:{
-          "curr_pair": item.curr_pair || "",
-          "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
-          "buy_sell": item.buy_sell || "",
-          "fc_amount": item.fc_amount || "",
-          "tenor": item.tenor || "",
-          "maturity_date": item.maturity_date || this.$today(),
-          "interbank_rate": item.interbank_rate || "",
-          "client_mrg": item.client_mrg || "",
-          "bank_mrg": item.bank_mrg || "",
-          "fwd_points": item.fwd_points || "",
-          "client_rate": item.client_rate || "",
-          "fc2_amount": item.fc2_amount || "",
+       data:{
+          ...item
         }
       }
 
@@ -255,14 +245,14 @@ export default {
             "type":  vm.type ||"",
 					  "deal_id": Math.floor((Math.random() * 15000) + 1) || "",
 					  "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
-            "trade_date": this.$today() ||  "",
+            "trade_date": vm.trade_date ||  this.$today(),
             "curr_pair": vm.curr_pair || "",
             "buy_sell": vm.buy_sell || "",
             "fc_amount": vm.fc_amount || "",
             "open_amount": vm.open_amount || "",
             "open_amount_per": vm.open_amount_per || "",
             "tenor": vm.tenor || "",
-            "maturity_date": vm.maturity_date || "",
+            "maturity_date": vm.maturity_date || this.$today(),
             "interbank_rate": vm.interbank_rate || "",
             "client_mrg": vm.client_mrg || "",
             "bank_mrg": vm.bank_mrg || "",
@@ -309,6 +299,7 @@ export default {
         .collection("deal/rate/read")
         .read(vObj)
         .then((response) => {
+          if(response){
            this.$set(this.vm, "bank_mrg", response.bank_mrg || "")
            this.$set(this.vm, "client_mrg", response.client_mrg || "")
            this.$set(this.vm, "client_rate", response.client_rate || "")
@@ -316,6 +307,8 @@ export default {
            this.$set(this.vm, "fwd_points", response.fwd_points || "")
            this.$set(this.vm, "interbank_rate", response.interbank_rate || "")
            this.$set(this.vm, "maturity_date", response.maturity_date || "")
+           this.countDown = 10
+           }
            this.$store.commit("loading", false);
         });
       }
@@ -487,7 +480,7 @@ function getEl(vm) {
         label: "Interbank Rate",
         rules: {},
         handlers: {
-          blur: [vm.onChange_interbank_rate],
+          change: [vm.onChange_interbank_rate],
         },
       },
       {

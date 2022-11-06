@@ -213,18 +213,7 @@ export default {
     onCreateDeal(item){
       const vObj = {
         data:{
-          "curr_pair": item.curr_pair || "",
-          "rate_id": Math.floor((Math.random() * 15000) + 1) || "",
-          "buy_sell": item.buy_sell || "",
-          "fc_amount": item.fc_amount || "",
-          "tenor": item.tenor || "",
-          "maturity_date": item.maturity_date || this.$today(),
-          "interbank_rate": item.interbank_rate || "",
-          "client_mrg": item.client_mrg || "",
-          "bank_mrg": item.bank_mrg || "",
-          "fwd_points": item.fwd_points || "",
-          "client_rate": item.client_rate || "",
-          "fc2_amount": item.fc2_amount || "",
+          ...item
         }
       }
 
