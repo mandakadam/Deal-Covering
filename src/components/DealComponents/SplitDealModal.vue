@@ -185,7 +185,9 @@ export default {
                   ...item
               }
           }
+        vObj.data.authorised = "N";
         delete vObj.data.id;
+        console.log(vObj)
 
         this.$credCAPI
         .collection("deal/create")

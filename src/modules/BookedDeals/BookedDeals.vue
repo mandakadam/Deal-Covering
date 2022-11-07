@@ -67,11 +67,20 @@
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="onAuthorise(data.item)"
+                @click="onAuthorise(data.item, 'Y')"
                 :disabled="data.item.authorised == 'Y'"
               >
                 Authorise
               </b-button>
+
+              <!-- <b-button
+                size="sm"
+                class="btn btn-danger btn-danger-outline mr-2"
+                @click="onAuthorise(data.item, 'N')"
+                v-if="data.item.authorised == 'Y'"
+              >
+                Un Authorise
+              </b-button> -->
 
               <b-button
                 size="sm"
@@ -234,11 +243,12 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-    onAuthorise(item){
+    onAuthorise(item, val){
+      console.log(val)
           const vObj = {
             data:{
               ...item,
-                "authorised": "Y"
+                "authorised": val
             }
         }
 
@@ -246,8 +256,8 @@ export default {
         .collection(`deal/authorise/${item.id}`)
         .update({body: vObj})
             .then((response) => {
-            this.$_successMessage(`Deal authorised successfully`);
-            this.$store.commit("OnActionPerformed", true)
+            this.$_successMessage(`Deal ${val == 'Y' ? 'authorised' : 'unauthorised'}  successfully`);
+            this.fetchAllDeals()
             });
         }
   },

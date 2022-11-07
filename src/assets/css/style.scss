@@ -93,6 +93,7 @@ body {
 font-size: 1rem;
 color: #67748e;
 }
+.btn.disabled, .btn:disabled{opacity: 0.4 !important;}
 
 .btn-group-sm>.btn, .btn-sm {
     padding: 2px 10px;
