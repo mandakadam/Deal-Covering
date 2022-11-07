@@ -169,12 +169,13 @@ export default {
           key: "interbank_rate",
           label: "Interbank Rate",
           tdClass: "text-right",
+          amountrounding:0
         },
-        { key: "client_mrg", label: "Client Mrg", tdClass: "text-right" },
-        { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right" },
-        { key: "fwd_points", label: "Fwd Points", tdClass: "text-right" },
-        { key: "client_rate", label: "Client Rate", tdClass: "text-right" },
-        { key: "fc2_amount", label: "Eqvt Amount", tdClass: "text-right" },
+        { key: "client_mrg", label: "Client Mrg", tdClass: "text-right", amountrounding:0 },
+        { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right", amountrounding:0 },
+        { key: "client_rate", label: "Client Rate", tdClass: "text-right", amountrounding:0 },
+        { key: "fwd_points", label: "Fwd Points", tdClass: "text-right", amountrounding:0 },
+        { key: "fc2_amount", label: "Eqvt Amount", tdClass: "text-right", amountrounding:0 },
       ],
       infoModal: {
         id: "info-modal",
@@ -193,7 +194,7 @@ export default {
   watch: {
     countDown(newVal) {
       if (newVal == 0) {
-        this.$set(this.vm, "interbank_rate", "");
+        this.resetRates()
       }
     },
   },
@@ -276,13 +277,7 @@ export default {
     },
     fetchRateData() {
       if(!(this.vm.curr_pair && this.vm.buy_sell && this.vm.tenor && this.vm.fc_amount)){
-          this.$set(this.vm, "bank_mrg", "")
-          this.$set(this.vm, "client_mrg", "")
-          this.$set(this.vm, "client_rate", "")
-          this.$set(this.vm, "fc2_amount", "")
-          this.$set(this.vm, "fwd_points", "")
-          this.$set(this.vm, "interbank_rate", "")
-          this.$set(this.vm, "maturity_date", "")
+          this.resetRates()
       }
       else{
         const vObj = {
@@ -307,11 +302,20 @@ export default {
            this.$set(this.vm, "fwd_points", response.fwd_points || "")
            this.$set(this.vm, "interbank_rate", response.interbank_rate || "")
            this.$set(this.vm, "maturity_date", response.maturity_date || "")
-           this.countDown = 10
+           this.onChange_interbank_rate()
            }
            this.$store.commit("loading", false);
         });
       }
+    },
+    resetRates(){
+          this.$set(this.vm, "bank_mrg", "")
+          this.$set(this.vm, "client_mrg", "")
+          this.$set(this.vm, "client_rate", "")
+          this.$set(this.vm, "fc2_amount", "")
+          this.$set(this.vm, "fwd_points", "")
+          this.$set(this.vm, "interbank_rate", "")
+          this.$set(this.vm, "maturity_date", "")
     },
     showInfoModal(item, index, button) {
       this.infoModal.title = `Row index: ${index}`;
@@ -325,7 +329,7 @@ export default {
     cellValue(data) {
       if (!data || data.value == null || data.value == "") return "-";
 
-      if (isNaN(data.value)) {
+      if (isNaN(data.value) ||  data.field.amountrounding == 0) {
         return data.value || "-";
       } else {
         let numFormat = "0,0";
@@ -494,12 +498,6 @@ function getEl(vm) {
       },
       {
         type: "number",
-        name: "fwd_points",
-        label: "Fwd Points",
-        rules: {},
-      },
-      {
-        type: "number",
         name: "client_rate",
         label: "Client Rate",
         rules: {},
@@ -509,6 +507,12 @@ function getEl(vm) {
               2
             )
           : "",
+      },
+      {
+        type: "number",
+        name: "fwd_points",
+        label: "Fwd Points",
+        rules: {},
       },
     ],
   };
