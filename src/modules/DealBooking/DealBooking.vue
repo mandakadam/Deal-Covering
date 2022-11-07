@@ -189,10 +189,8 @@ export default {
       }
     },
      isActionPerformed(newVal) {
-          if(newVal == true){
             this.selectedItems = [];
             this.fetchAllDeals();
-          }
     },
   },
   created() {

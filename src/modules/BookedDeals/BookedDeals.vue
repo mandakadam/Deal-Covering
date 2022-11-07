@@ -35,6 +35,7 @@
     </b-card>
     <div class="d-flex justify-content-between mb-3">
       <h5 class="text-light m-0">Booked Deals</h5>
+      <b-button size="sm" variant="success" class="mt-n1" :disabled="selectedItems.length < 1" @click="$refs['AuthoriseModal'].showModal()"><b-icon-shuffle /> Authorise Deals</b-button>
     </div>
     <b-card body-class="p-0" class="shadow border-radius-lg" v-if="Object.keys(ActiveCompany).length && items.length">
       <b-table
@@ -57,16 +58,17 @@
           >
           <slot v-else :name="field.key" :data="data.item">
             <b-navbar class="text-nowrap p-0">
-              <!-- <b-form-checkbox
+              <b-form-checkbox
                 class="mr-2"
                 @change="(e)=>onSelectItems(e, data.item)"
               >
-              </b-form-checkbox> -->
+              </b-form-checkbox>
 
               <b-button
                 size="sm"
                 class="btn-success bg-gradient-success mr-2"
-                @click="selectedDeal = data.item, $refs['AuthoriseModal'].showModal()"
+                @click="onAuthorise(data.item)"
+                :disabled="data.item.authorised == 'Y'"
               >
                 Authorise
               </b-button>
@@ -75,6 +77,7 @@
                 size="sm"
                 class="btn-primary bg-gradient-primary mr-2"
                 @click="selectedDeal = data.item, $refs['SplitDealModal'].showModal()"
+                :disabled="data.item.authorised != 'Y'"
               >
                 Split
               </b-button>
@@ -108,9 +111,8 @@
     </b-card>
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
-
     <SplitDealModal ref="SplitDealModal" :dataSource="selectedDeal"/>
-    <AuthoriseModal ref="AuthoriseModal" :dataSource="selectedDeal"/>
+    <AuthoriseModal ref="AuthoriseModal" :dataSource="selectedDeal" :selectedItems="selectedItems" />
   </section>
 </template>
 
@@ -172,7 +174,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["ActiveCompany"]),
+    ...mapState(["ActiveCompany", "isActionPerformed"]),
     el() {
       return getEl(this);
     },
@@ -182,6 +184,10 @@ export default {
       if (newVal == 0) {
         this.$set(this.vm, "interbank_rate", "");
       }
+    },
+    isActionPerformed(newVal) {
+        this.selectedItems = [];
+        this.fetchAllDeals();
     },
   },
   created() {
@@ -228,6 +234,22 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
+    onAuthorise(item){
+          const vObj = {
+            data:{
+              ...item,
+                "authorised": "Y"
+            }
+        }
+
+        this.$credCAPI
+        .collection(`deal/authorise/${item.id}`)
+        .update({body: vObj})
+            .then((response) => {
+            this.$_successMessage(`Deal authorised successfully`);
+            this.$store.commit("OnActionPerformed", true)
+            });
+        }
   },
 };
 

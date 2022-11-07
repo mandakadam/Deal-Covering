@@ -88,12 +88,12 @@
                       <FormElementWithValidation
                         :item='{
                             type: "number",
-                            name: "fc_amt",
+                            name: "fc_amount",
                             label: "Amount",
                             rules: {required:true},
                             hideLabel:true
                           }'
-                        v-model="item.fc_amt"
+                        v-model="item.fc_amount"
                         formControlSize="sm"
                       >
                       </FormElementWithValidation>
@@ -105,12 +105,12 @@
                       <FormElementWithValidation
                         :item='{
                             type: "number",
-                            name: "fc2_amt",
+                            name: "fc2_amount",
                             label: "Amount",
                             rules: {required:true},
                             hideLabel:true
                           }'
-                        v-model="item.fc2_amt"
+                        v-model="item.fc2_amount"
                         formControlSize="sm"
                       >
                       </FormElementWithValidation>
@@ -144,7 +144,7 @@ export default {
     data(){
         return{
             split: 1,
-            split_details: [{fc_amt: "", fc2_amt: ""}]
+            split_details: [{fc_amount: "", fc2_amount: ""}]
         }
     },
     methods:{
@@ -163,31 +163,37 @@ export default {
         if (!success) {
             return;
         }
-       this.onCreateSplit()
+        
+        this.onCraeteDeal(this.dataSource)  // original create
+        this.split_details.forEach(item => {
+            this.onCraeteDeal(item)
+        });
+       
       },
       handleHide() {
       },
       addSplitDetails(){
-            this.split_details = [];
+        this.split_details = [];
         for(var i = 1; i <= (this.split <= 3 ? this.split : 1); i++){
-                this.split_details.push({fc_amt: "", fc2_amt: ""})
+                this.split_details.push({fc_amount: "", fc2_amount: ""})
         }
         },
-        onCreateSplit(){
-            const vObj = {
-            data:{
-                "deal_id": this.dataSource.deal_id || "",
-                "split": this.split || "",
-                "split_details" : this.split_details || []
-            }
-        }
+        onCraeteDeal(item){
+        let vObj = {
+              data:{
+                  ...this.dataSource,
+                  ...item
+              }
+          }
+        delete vObj.data.id;
 
         this.$credCAPI
-        .collection("deal/split/create")
+        .collection("deal/create")
         .create({body: vObj})
             .then((response) => {
-            this.$_successMessage(`Deal Split process started.`);
-            this.hideModal()
+            this.$_successMessage(`Deal splits created`);
+            this.hideModal();
+            this.$store.commit("OnActionPerformed", true)
             });
         }
     },

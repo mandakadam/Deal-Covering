@@ -10,7 +10,7 @@
         no-fade
       >
       
-      <div class="form-wrapper">
+      <div class="form-wrapper" v-if="selectedItems.length == 1">
            <ValidationObserver ref="formObserver" v-slot="{ handleSubmit }">
               <b-form autocomplete="off" @submit.prevent="handleSubmit(handleSubmit)">
                 <div class="grid grid--6">
@@ -34,7 +34,7 @@
           </ValidationObserver>
       </div>
 
-      <b-card body-class="p-0" class="shadow border-radius-lg" v-if="items.length">
+      <b-card body-class="p-0" class="shadow border-radius-lg" v-if="selectedItems.length">
         <b-table
           :sticky-header="true"
           :no-border-collapse="true"
@@ -43,7 +43,7 @@
           size="sm"
           table-variant="light"
           head-variant="dark"
-          :items="items"
+          :items="selectedItems"
           :fields="fields"
           class="mb-0 border-radius-lg custom_table"
         >
@@ -89,32 +89,18 @@
 
 <script>
 export default {
-    props: ["dataSource"],
+    props: ["dataSource", "selectedItems"],
     data(){
         return{
            vm: {},
            currencyPair: this.$config.currencyPair,
-           items: [{
-      "curr_pair": "USD/INR",
-      "buy_sell": "SELL",
-      "fc_amount": "",
-      "tenor": "SPOT",
-      "maturity_date": "",
-      "interbank_rate": "1",
-      "client_mrg": "11",
-      "bank_mrg": "1",
-      "fwd_points": "",
-      "client_rate": "1",
-      "fc2_amount": "",
-      "id": 4
-    }],
             fields: [
-              {
-                key: "actions",
-                stickyColumn: true,
-                isRowHeader: true,
-                variant: "light",
-              },
+              // {
+              //   key: "actions",
+              //   stickyColumn: true,
+              //   isRowHeader: true,
+              //   variant: "light",
+              // },
               { key: "tenor", label: "Tenor"},
                { key: "rate_id", label: "Rate Id", amountrounding:0 },
                 { key: "curr_pair", label: "Curr Pair"},
@@ -157,7 +143,7 @@ export default {
         if (!success) {
             return;
         }
-       this.onCreateSplit()
+       this.onAuthorise()
       },
       handleHide() {
       },
@@ -166,22 +152,20 @@ export default {
         for(var i = 1; i <= (this.split <= 3 ? this.split : 1); i++){
                 this.split_details.push({fc_amt: "", fc2_amt: ""})
         }
-        },
-        onCreateSplit(){
+      },
+        onAuthorise(){
             const vObj = {
             data:{
-                "deal_id": this.dataSource.deal_id || "",
-                "split": this.split || "",
-                "split_details" : this.split_details || []
+                "authorised": "Y"
             }
         }
 
         this.$credCAPI
-        .collection("deal/split/create")
-        .create({body: vObj})
+        .collection(`deal/authorise/${this.dataSource.id}`)
+        .update({body: vObj})
             .then((response) => {
-            this.$_successMessage(`Deal Split process started.`);
-            this.hideModal()
+            this.$_successMessage(`Deal authorised successfully`);
+            this.$store.commit("OnActionPerformed", true)
             });
         }
     },

@@ -39,6 +39,26 @@
       "client_rate": "79.8768",
       "fc2_amount": "798768000",
       "id": 2
+    },
+    {
+      "type": "Client",
+      "deal_id": 6805,
+      "rate_id": 12353,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "12",
+      "open_amount": "500000",
+      "open_amount_per": "5",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "798768000",
+      "id": 3
     }
   ],
   "deal_read": [
@@ -60,7 +80,8 @@
       "fwd_points": "1",
       "client_rate": "79.8768",
       "fc2_amount": "798768000",
-      "id": 1
+      "id": 1,
+      "authorised": "Y"
     },
     {
       "type": "Client",
@@ -80,7 +101,8 @@
       "fwd_points": "1",
       "client_rate": "79.8768",
       "fc2_amount": "798768000",
-      "id": 2
+      "id": 2,
+      "authorised": "Y"
     },
     {
       "type": "Client",
@@ -100,7 +122,8 @@
       "fwd_points": "1",
       "client_rate": "79.8768",
       "fc2_amount": "300,000,000",
-      "id": 3
+      "id": 3,
+      "authorised": "Y"
     },
     {
       "type": "Client",
@@ -121,6 +144,90 @@
       "client_rate": "79.8768",
       "fc2_amount": "200,000,000",
       "id": 4
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "3",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "3",
+      "authorised": "Y",
+      "id": 5
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "3",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "11",
+      "authorised": "Y",
+      "id": 6
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "3",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "3",
+      "authorised": "Y",
+      "id": 7
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "3",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "3",
+      "authorised": "Y",
+      "id": 8
     }
   ],
   "deal_rate_read": {
@@ -132,5 +239,74 @@
     "fc2_amount": "798768000",
     "maturity_date": "22-05-2022"
   },
-  "deal_split_create": []
+  "deal_split_create": [
+    {
+      "fc_amount": "5",
+      "fc2_amount": "7",
+      "id": 1
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/EUR",
+      "buy_sell": "BUY",
+      "fc_amount": "2",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "2",
+      "authorised": "Y",
+      "id": 2
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "2",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "3",
+      "authorised": "Y",
+      "id": 3
+    },
+    {
+      "type": "Client",
+      "deal_id": 5739,
+      "rate_id": 2273,
+      "trade_date": "11-07-2022",
+      "curr_pair": "USD/INR",
+      "buy_sell": "BUY",
+      "fc_amount": "2",
+      "open_amount": "",
+      "open_amount_per": "",
+      "tenor": "SPOT",
+      "maturity_date": "22-05-2022",
+      "interbank_rate": "81.37206",
+      "client_mrg": "1.31435",
+      "bank_mrg": "0.18091",
+      "fwd_points": "1",
+      "client_rate": "79.8768",
+      "fc2_amount": "2",
+      "authorised": "Y",
+      "id": 4
+    }
+  ]
 }

@@ -250,8 +250,8 @@ export default {
             "curr_pair": vm.curr_pair || "",
             "buy_sell": vm.buy_sell || "",
             "fc_amount": vm.fc_amount || "",
-            "open_amount": vm.open_amount || "",
-            "open_amount_per": vm.open_amount_per || "",
+            "open_amount": vm.open_amount || "500000",
+            "open_amount_per": vm.open_amount_per || "5",
             "tenor": vm.tenor || "",
             "maturity_date": vm.maturity_date || this.$today(),
             "interbank_rate": vm.interbank_rate || "",
@@ -456,12 +456,6 @@ function getEl(vm) {
       },
       {
         type: "number",
-        label: "Client Mrg",
-        name: "client_mrg",
-        rules: {},
-      },
-      {
-        type: "number",
         name: "interbank_rate",
         label: "Interbank Rate",
         rules: {},
@@ -477,6 +471,19 @@ function getEl(vm) {
       },
       {
         type: "number",
+        name: "fwd_points",
+        label: "Fwd Points",
+        rules: {},
+      },
+      
+      {
+        type: "number",
+        label: "Client Mrg",
+        name: "client_mrg",
+        rules: {},
+      },
+      {
+        type: "number",
         name: "client_rate",
         label: "Client Rate",
         rules: {},
@@ -486,12 +493,6 @@ function getEl(vm) {
               2
             )
           : "",
-      },
-      {
-        type: "number",
-        name: "fwd_points",
-        label: "Fwd Points",
-        rules: {},
       },
     ],
   };
