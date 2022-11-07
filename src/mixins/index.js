@@ -249,6 +249,27 @@ export const Globalmixin = {
       } else if (charCode < 48 || charCode > 57) {
         return true;
       }
-    }
+    },
+    cellValue(data) {
+      if (!data || data.value == null || data.value == "") return "-";
+
+      if (isNaN(data.value) || data.field.amountrounding == 0) {
+        return data.value || "-";
+      } else {
+        let numFormat = "0,0";
+        if (
+          data.field.amountrounding &&
+          (!data.field.rounding || data.field.rounding != "card")
+        ) {
+          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
+        }
+        return (
+          this.$options.filters.number(
+            parseFloat(data.value).toString(),
+            numFormat
+          ) || "-"
+        );
+      }
+    },
   }
 };

@@ -152,7 +152,7 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "rate_id", label: "Rate Id"},
+        { key: "rate_id", label: "Rate Id", amountrounding:0 },
         { key: "curr_pair", label: "Curr Pair"},
         {
           key: "buy_sell",
@@ -325,27 +325,6 @@ export default {
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
-    },
-    cellValue(data) {
-      if (!data || data.value == null || data.value == "") return "-";
-
-      if (isNaN(data.value) ||  data.field.amountrounding == 0) {
-        return data.value || "-";
-      } else {
-        let numFormat = "0,0";
-        if (
-          data.field.amountrounding &&
-          (!data.field.rounding || data.field.rounding != "card")
-        ) {
-          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
-        }
-        return (
-          this.$options.filters.number(
-            parseFloat(data.value).toString(),
-            numFormat
-          ) || "-"
-        );
-      }
     },
     prepareeQuery(){
       if(!this.vm.deal_query){

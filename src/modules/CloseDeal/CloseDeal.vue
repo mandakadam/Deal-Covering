@@ -239,28 +239,6 @@ export default {
       this.infoModal.title = "";
       this.infoModal.content = "";
     },
-
-    cellValue(data) {
-      if (!data || data.value == null || data.value == "") return "-";
-
-      if (isNaN(data.value)) {
-        return data.value || "-";
-      } else {
-        let numFormat = "0,0";
-        if (
-          data.field.amountrounding &&
-          (!data.field.rounding || data.field.rounding != "card")
-        ) {
-          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
-        }
-        return (
-          this.$options.filters.number(
-            parseFloat(data.value).toString(),
-            numFormat
-          ) || "-"
-        );
-      }
-    },
   },
 };
 

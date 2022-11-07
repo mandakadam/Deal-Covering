@@ -34,7 +34,7 @@
           </ValidationObserver>
       </div>
 
-      <b-card body-class="p-0" class="shadow border-radius-lg" v-if="items.length">
+      <b-card body-class="p-0" class="shadow border-radius-lg" v-if="selectedItems.length">
         <b-table
           :sticky-header="true"
           :no-border-collapse="true"
@@ -43,7 +43,7 @@
           size="sm"
           table-variant="light"
           head-variant="dark"
-          :items="items"
+          :items="selectedItems"
           :fields="fields"
           class="mb-0 border-radius-lg custom_table"
         >
@@ -102,25 +102,11 @@
 
 <script>
 export default {
-    props: ["dataSource"],
+    props: ["dataSource", "selectedItems"],
     data(){
         return{
            vm: {},
            currencyPair: this.$config.currencyPair,
-           items: [{
-      "curr_pair": "USD/INR",
-      "buy_sell": "SELL",
-      "fc_amount": "",
-      "tenor": "SPOT",
-      "maturity_date": "",
-      "interbank_rate": "1",
-      "client_mrg": "11",
-      "bank_mrg": "1",
-      "fwd_points": "",
-      "client_rate": "1",
-      "fc2_amount": "",
-      "id": 4
-    }],
             fields: [
               {
                 key: "actions",
@@ -129,7 +115,7 @@ export default {
                 variant: "light",
               },
               { key: "tenor", label: "Tenor"},
-               { key: "rate_id", label: "Rate Id"},
+               { key: "rate_id", label: "Rate Id", amountrounding:0 },
                 { key: "curr_pair", label: "Curr Pair"},
               { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
               { key: "utilise_amount", label: "Utilise", tdClass: "text-right" },
@@ -137,12 +123,12 @@ export default {
               {
                 key: "interbank_rate",
                 label: "Interbank Rate",
-                tdClass: "text-right",
+                tdClass: "text-right", amountrounding:0 
               },
-              { key: "client_mrg", label: "Client Mrg", tdClass: "text-right" },
-              { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right" },
-              { key: "swap_points", label: "Swap Points", tdClass: "text-right" },
-              { key: "client_rate", label: "Client Rate", tdClass: "text-right" },
+              { key: "client_mrg", label: "Client Mrg", tdClass: "text-right", amountrounding:0},
+              { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right", amountrounding:0},
+              { key: "swap_points", label: "Swap Points", tdClass: "text-right", amountrounding:0},
+              { key: "client_rate", label: "Client Rate", tdClass: "text-right", amountrounding:0},
             ],
         }
     },
@@ -152,35 +138,14 @@ export default {
       },
     },
     methods:{
-      fetchData(){
-      this.vm = {...this.dataSource}
-      },
+        fetchData(){
+        this.vm = {...this.dataSource}
+        },
     showModal() {
       this.$bvModal.show("mergeDealModal");
     },
     hideModal() {
       this.$bvModal.hide("mergeDealModal");
-    },
-    cellValue(data) {
-      if (!data || data.value == null || data.value == "") return "-";
-
-      if (isNaN(data.value)) {
-        return data.value || "-";
-      } else {
-        let numFormat = "0,0";
-        if (
-          data.field.amountrounding &&
-          (!data.field.rounding || data.field.rounding != "card")
-        ) {
-          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
-        }
-        return (
-          this.$options.filters.number(
-            parseFloat(data.value).toString(),
-            numFormat
-          ) || "-"
-        );
-      }
     },
      handleOk(bvModalEvent) {
         bvModalEvent.preventDefault()
@@ -191,14 +156,33 @@ export default {
         if (!success) {
             return;
         }
-       this.onCreateSplit()
+       this.onCreateDeal()
       },
+      onCreateDeal(){
+      let item = {...this.vm}
+      delete item.id;
+
+      const vObj = {
+       data:{
+          ...item
+        }
+      }
+
+      this.$credCAPI
+       .collection("deal/create")
+       .create({body: vObj})
+        .then((response) => {
+          this.$_successMessage(`Deal created successfully.`);
+          this.hideModal();
+          this.$store.commit("OnActionPerformed", true)
+        });
+    },
       handleHide() {
       },
       addSplitDetails(){
             this.split_details = [];
         for(var i = 1; i <= (this.split <= 3 ? this.split : 1); i++){
-                this.split_details.push({fc_amt: "", fc2_amt: ""})
+                this.split_details.push({fc_amount: "", fc2_amount: ""})
         }
         },
         onCreateSplit(){
@@ -251,13 +235,13 @@ function getEl(vm) {
       },
       {
         type: "number",
-        name: "fc2_amt",
+        name: "fc_amount",
         label: vm.dataSource.curr_pair?.split('/')[0],
         rules: {}
       },
       {
         type: "number",
-        name: "fc2_amt",
+        name: "fc2_amount",
         label: vm.dataSource.curr_pair?.split('/')[1],
         rules: {}
       },

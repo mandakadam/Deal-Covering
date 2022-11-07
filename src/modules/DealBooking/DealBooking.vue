@@ -102,7 +102,7 @@
     <no-data v-else-if="!Object.keys(ActiveCompany).length" title="Select a company" msg="Select a company before making actions."></no-data>
     <no-data v-else-if="!items.length" title="No Deal Found" msg=""></no-data>
 
-    <MergeDealModal ref="MergeDealModal" :dataSource="selectedItems[1]"/>
+    <MergeDealModal ref="MergeDealModal" :dataSource="selectedItemsForMerge" :selectedItems="selectedItems" />
   </section>
 </template>
 
@@ -131,7 +131,7 @@ export default {
           variant: "light",
         },
         { key: "trade_date", label: "Trade Date" },
-        { key: "deal_id", label: "Rate Id" },
+        { key: "rate_id", label: "Rate Id", amountrounding:0  },
         { key: "curr_pair", label: "Curr Pair" },
         {
           key: "buy_sell",
@@ -147,13 +147,13 @@ export default {
         {
           key: "interbank_rate",
           label: "Interbank Rate",
-          tdClass: "text-right",
+          tdClass: "text-right", amountrounding:0 
         },
-        { key: "client_mrg", label: "Client Mrg", tdClass: "text-right" },
-        { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right" },
-        { key: "fwd_points", label: "Fwd Points", tdClass: "text-right" },
-        { key: "client_rate", label: "Client Rate", tdClass: "text-right" },
-        { key: "fc2_amount", label: "Eqvt Amount", tdClass: "text-right" },
+        { key: "client_mrg", label: "Client Mrg", tdClass: "text-right", amountrounding:0  },
+        { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right", amountrounding:0  },
+        { key: "fwd_points", label: "Fwd Points", tdClass: "text-right", amountrounding:0  },
+        { key: "client_rate", label: "Client Rate", tdClass: "text-right", amountrounding:0  },
+        { key: "fc2_amount", label: "Eqvt Amount", tdClass: "text-right", amountrounding:0  },
       ],
       infoModal: {
         id: "info-modal",
@@ -163,16 +163,36 @@ export default {
     };
   },
   computed: {
-    ...mapState(["ActiveCompany"]),
+    ...mapState(["ActiveCompany", "isActionPerformed"]),
     el() {
       return getEl(this);
     },
+    selectedItemsForMerge(){
+      let selectedItemsForMerge = {}
+      let list = [...this.selectedItems]
+      if(list && list.length == 2 ){
+        selectedItemsForMerge = {...list[0]}
+        selectedItemsForMerge.fc_amount  = list[0].fc_amount
+        selectedItemsForMerge.fc2_amount  = list[1].fc_amount
+        selectedItemsForMerge.client_rate  = parseFloat(list[0].client_rate) * parseFloat(list[1].client_rate)
+        selectedItemsForMerge.client_mrg  = parseFloat(list[0].client_mrg) * parseFloat(list[1].client_mrg)
+
+        selectedItemsForMerge.curr_pair  = `${list[0].curr_pair.split('/')[0]}/${list[1].curr_pair.split('/')[1]}`
+      }
+      return selectedItemsForMerge
+    }
   },
   watch: {
     countDown(newVal) {
       if (newVal == 0) {
         this.$set(this.vm, "interbank_rate", "");
       }
+    },
+     isActionPerformed(newVal) {
+          if(newVal == true){
+            this.selectedItems = [];
+            this.fetchAllDeals();
+          }
     },
   },
   created() {
@@ -232,28 +252,6 @@ export default {
     resetInfoModal() {
       this.infoModal.title = "";
       this.infoModal.content = "";
-    },
-
-    cellValue(data) {
-      if (!data || data.value == null || data.value == "") return "-";
-
-      if (isNaN(data.value)) {
-        return data.value || "-";
-      } else {
-        let numFormat = "0,0";
-        if (
-          data.field.amountrounding &&
-          (!data.field.rounding || data.field.rounding != "card")
-        ) {
-          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
-        }
-        return (
-          this.$options.filters.number(
-            parseFloat(data.value).toString(),
-            numFormat
-          ) || "-"
-        );
-      }
     },
   },
 };

@@ -116,7 +116,7 @@ export default {
                 variant: "light",
               },
               { key: "tenor", label: "Tenor"},
-               { key: "rate_id", label: "Rate Id"},
+               { key: "rate_id", label: "Rate Id", amountrounding:0 },
                 { key: "curr_pair", label: "Curr Pair"},
               { key: "open_amount", label: "Open Amount", tdClass: "text-right" },
               { key: "utilise_amount", label: "Utilise", tdClass: "text-right" },
@@ -124,12 +124,12 @@ export default {
               {
                 key: "interbank_rate",
                 label: "Interbank Rate",
-                tdClass: "text-right",
+                tdClass: "text-right", amountrounding:0 
               },
-              { key: "client_mrg", label: "Client Mrg", tdClass: "text-right" },
-              { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right" },
-              { key: "swap_points", label: "Swap Points", tdClass: "text-right" },
-              { key: "client_rate", label: "Client Rate", tdClass: "text-right" },
+              { key: "client_mrg", label: "Client Mrg", tdClass: "text-right", amountrounding:0  },
+              { key: "bank_mrg", label: "Bank Mrg", tdClass: "text-right", amountrounding:0  },
+              { key: "swap_points", label: "Swap Points", tdClass: "text-right", amountrounding:0  },
+              { key: "client_rate", label: "Client Rate", tdClass: "text-right", amountrounding:0  },
             ],
         }
     },
@@ -147,27 +147,6 @@ export default {
     },
     hideModal() {
       this.$bvModal.hide("authoriseDealModal");
-    },
-    cellValue(data) {
-      if (!data || data.value == null || data.value == "") return "-";
-
-      if (isNaN(data.value)) {
-        return data.value || "-";
-      } else {
-        let numFormat = "0,0";
-        if (
-          data.field.amountrounding &&
-          (!data.field.rounding || data.field.rounding != "card")
-        ) {
-          numFormat += `.${"0".repeat(data.field.amountrounding)}`;
-        }
-        return (
-          this.$options.filters.number(
-            parseFloat(data.value).toString(),
-            numFormat
-          ) || "-"
-        );
-      }
     },
      handleOk(bvModalEvent) {
         bvModalEvent.preventDefault()

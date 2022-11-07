@@ -5,8 +5,8 @@ var config = {
 
 config.baseURL = '/';
 config.jsonserver = true;
-// config.JREST = "http://localhost:50001"; //JREST
-config.JREST = "/JREST"; //JREST
+config.JREST = "http://localhost:50001"; //JREST
+// config.JREST = "/JREST"; //JREST
 config.NREST = "/NREST"; //NREST
 
 config.globalDateFormatLong = "MM-DD-YYYY HH24:mi:ss";
