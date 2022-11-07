@@ -1,3 +1,10 @@
 {
-    "/deal/read?*":"/deal_read"
+    "/rate/read?*":"/rate_read",
+    "/rate/create":"/rate_read",
+    "/deal/read?*":"/deal_read",
+    "/deal/create":"/deal_read",
+    "/deal/delete/:id":"/deal_read/:id",
+    "/deal/authorise/:id":"/deal_read/:id",
+    "/deal/rate/read?*":"/deal_rate_read",
+    "/deal/split/create":"/deal_split_create"
 }

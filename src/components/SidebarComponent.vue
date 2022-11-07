@@ -1,5 +1,5 @@
 <template>
-<b-list-group flush class="sidenav_list pt-3">
+<b-list-group flush class="sidenav_list pt-1">
       <b-list-group-item to="/RateBooking"><b-icon-book class="text-warning"/> Booking</b-list-group-item>
       <b-list-group-item to="/SavedDeals"><b-icon-save-fill class="text-success" /> Saved Deals</b-list-group-item>
       <b-list-group-item to="/DealBooking"><b-icon-check-circle class="text-info" /> Deal Booking</b-list-group-item>
@@ -21,10 +21,9 @@ export default {
             .b-icon{margin-right: 0.5rem;}
             .list-group-item:not(.active){border: 0; }
             .router-link-exact-active {
-                  background-color: #f6f9fc;
+                  background-color: #ebebeb;
                   box-shadow: none; border: 0;
                   color: #344767;
-                  border-radius: 0.5rem;
                   }
       }
 </style>
